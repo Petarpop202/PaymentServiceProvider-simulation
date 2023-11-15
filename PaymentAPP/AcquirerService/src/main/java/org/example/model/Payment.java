@@ -4,6 +4,7 @@ import lombok.*;
 import org.example.model.enums.PaymentStatus;
 
 import javax.persistence.*;
+import java.net.URL;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -23,6 +24,9 @@ public class Payment {
     @Column(name = "merchant_id")
     private String merchantId;
 
+    @Column(name = "merchant_order_id")
+    private Long merchantOrderId;
+
     @Column
     private float amount;
 
@@ -33,6 +37,12 @@ public class Payment {
     private PaymentStatus status;
 
     private int paymentExpiration;
+
+    private URL successUrl;
+
+    private URL errorUrl;
+
+    private URL failedUrl;
 
     public LocalDateTime getValidUntil() {
         if(timestamp != null)
