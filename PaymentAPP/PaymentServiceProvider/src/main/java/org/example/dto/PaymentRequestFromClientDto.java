@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentRequestDto {
+public class PaymentRequestFromClientDto {
     private Long merchantOrderId;
     private float amount;
     private LocalDateTime timeStamp;

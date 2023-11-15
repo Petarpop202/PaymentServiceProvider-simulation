@@ -2,7 +2,6 @@ package org.example.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -18,6 +17,12 @@ public class BankAccount {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name= "merchant_id")
+    private String merchantId;
+
+    @Column(name = "merchant_password")
+    private String merchantPassword;
+
     @Column
     private String pan;
 
@@ -29,4 +34,7 @@ public class BankAccount {
 
     @Column(name = "expiration_date")
     private Date expirationDate;
+
+    @Column
+    private float amount;
 }

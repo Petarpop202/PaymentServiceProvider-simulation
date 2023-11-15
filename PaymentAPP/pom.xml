@@ -21,8 +21,6 @@
         <module>IssuerService</module>
         <module>PayPal</module>
         <module>CryptoService</module>
-        <module>IPSService</module>
-        <module>CreditCardPayment</module>
     </modules>
 
     <properties>
