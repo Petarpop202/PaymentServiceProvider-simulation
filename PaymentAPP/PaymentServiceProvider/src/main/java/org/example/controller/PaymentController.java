@@ -1,11 +1,14 @@
 package org.example.controller;
 
-import org.example.dto.CardPaymentRequestDto;
-import org.example.dto.CardPaymentResponseDto;
-import org.example.dto.PaymentRequestFromClientDto;
+import org.example.dto.CardPaymentRequest;
+import org.example.dto.CardPaymentResponse;
+import org.example.dto.PaymentRequestFromClient;
+import org.example.dto.TransactionDetails;
+import org.example.exception.NotFoundException;
 import org.example.service.CardPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,22 +26,31 @@ public class PaymentController {
     @Autowired
     private CardPaymentService cardPaymentService;
 
-    @PostMapping("/cardPayment")
-    public ResponseEntity<?> cardPaymentRequest(@RequestBody PaymentRequestFromClientDto paymentRequestDto) throws Exception {
+    @PostMapping(
+            value= "/card-payment",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> cardPaymentRequest(@RequestBody PaymentRequestFromClient paymentRequestDto) throws Exception {
         final String uri = "http://localhost:9000/api/aquirer/psp-payment-response";
-        CardPaymentRequestDto cardPaymentRequestDto = cardPaymentService.createCardPaymentRequest(paymentRequestDto);
-        if(cardPaymentRequestDto == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency not found");
+        CardPaymentRequest cardPaymentRequestDto = cardPaymentService.createCardPaymentRequest(paymentRequestDto);
 
-        ResponseEntity<CardPaymentResponseDto> responseEntity = restTemplate.postForEntity(
+        ResponseEntity<CardPaymentResponse> responseEntity = restTemplate.postForEntity(
                 uri,
                 cardPaymentRequestDto,
-                CardPaymentResponseDto.class );
-        CardPaymentResponseDto responseDto = responseEntity.getBody();
+                CardPaymentResponse.class );
+        CardPaymentResponse responseDto = responseEntity.getBody();
 
         if(responseDto == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bank account not found");
+            throw new NotFoundException("Bank account not found!");
         return ResponseEntity.ok(responseDto);
+    }
 
+    @PostMapping(
+            value = "/acquirer-bank-response",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public void acquirerBankResponse(@RequestBody TransactionDetails transactionDetails){
     }
 }

@@ -9,7 +9,7 @@ import java.net.URL;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PspPaymentResponseDto {
+public class CardPaymentResponse {
     private Long paymentId;
     private URL paymentUrl;
 }

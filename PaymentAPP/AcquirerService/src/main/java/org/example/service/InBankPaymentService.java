@@ -1,43 +1,80 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.dto.CardPaymentRequestDto;
-import org.example.dto.CardPaymentResponseDto;
+import org.example.dto.CardPaymentRequest;
+import org.example.exception.BadRequestException;
+import org.example.exception.NotFoundException;
 import org.example.model.BankAccount;
 import org.example.model.Payment;
-import org.example.model.enums.PaymentStatus;
 import org.example.repository.IBankAccountRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.parameters.P;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import javax.transaction.Transactional;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class InBankPaymentService {
 
     private final IBankAccountRepository bankAccountRepository;
 
-    public void doCardPayment(Payment payment, CardPaymentRequestDto cardPaymentRequestDto) {
-        BankAccount sellerAccount = bankAccountRepository.findBankAccountByMerchantId(payment.getMerchantId()).orElseGet(null);
-        BankAccount buyerAccount = bankAccountRepository.findBankAccountByCardHolderName(cardPaymentRequestDto.getCardHolderName()).orElseGet(null);
+    private final TransactionDetailsService transactionDetailsService;
 
-        if(payment.getAmount() > buyerAccount.getAmount())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough money!");
+    public void doCardPayment(Payment payment, CardPaymentRequest cardPaymentRequestDto) {
+        BankAccount sellerAccount = bankAccountRepository.findBankAccountByMerchantId(payment.getMerchantId())
+                .orElseThrow(() -> new NotFoundException("No seller account exist!"));
+        BankAccount buyerAccount = bankAccountRepository.findBankAccountByCardHolderName(cardPaymentRequestDto.getCardHolderName())
+                .orElseThrow(() -> new NotFoundException("No buyer account exist!"));
 
+        if(payment.getAmount() > buyerAccount.getBalance())
+            transactionDetailsService.failedPayment(payment, "Not enough money!");
+
+        payment.setAcquirerCardNumber(sellerAccount.getPan());
+        payment.setIssuerCardNumber(buyerAccount.getPan());
         transferMoney(buyerAccount,sellerAccount,payment);
-        payment.setStatus(PaymentStatus.SUCCESS);
+        transactionDetailsService.successPayment(payment);
     }
 
     private void transferMoney(BankAccount buyerAccount, BankAccount sellerAccount, Payment payment) {
-        buyerAccount.setAmount(buyerAccount.getAmount() - payment.getAmount());
-        sellerAccount.setAmount(sellerAccount.getAmount() + payment.getAmount());
+        buyerAccount.setBalance(buyerAccount.getBalance() - payment.getAmount());
+        sellerAccount.setBalance(sellerAccount.getBalance() + payment.getAmount());
         bankAccountRepository.save(buyerAccount);
         bankAccountRepository.save(sellerAccount);
     }
 
+    public void validateCreditCard(CardPaymentRequest cardPaymentRequestDto, Payment payment) {
+        checkAllParams(cardPaymentRequestDto);
+        checkExpirationDate(cardPaymentRequestDto);
+    }
+
+    // todo: Pronalazenje racuna preko pana ne preko card holder-a
+    private void checkAllParams(CardPaymentRequest cardPaymentRequestDto) {
+        BankAccount bankAccount = bankAccountRepository.findBankAccountByCardHolderName(cardPaymentRequestDto.getCardHolderName())
+                .orElseThrow(() -> new NotFoundException("Account doesn't exist!"));
+
+        if(!BCrypt.checkpw(cardPaymentRequestDto.getPan(),bankAccount.getPan()))
+            throw new BadRequestException("Invalid parameters!");
+
+        if(!BCrypt.checkpw(cardPaymentRequestDto.getSecurityCode(),bankAccount.getSecurityCode()))
+            throw new BadRequestException("Invalid parameters!");
+
+        if(!cardPaymentRequestDto.getCardHolderName().equalsIgnoreCase(bankAccount.getCardHolderName()))
+            throw new BadRequestException("Invalid parameters!");
+
+        if(!(String.valueOf(cardPaymentRequestDto.getExpirationDate().getMonth()).equals(String.valueOf(bankAccount.getExpirationDate().getMonth()))
+                && String.valueOf(cardPaymentRequestDto.getExpirationDate().getYear()).equals(String.valueOf(bankAccount.getExpirationDate().getYear()))))
+            throw new BadRequestException("Invalid parameters!");
+
+    }
+
+    private void checkExpirationDate(CardPaymentRequest cardPaymentRequestDto) {
+        LocalDateTime expirationDate = Instant.ofEpochMilli(cardPaymentRequestDto.getExpirationDate().getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        if(expirationDate.isBefore(LocalDateTime.now()))
+            throw new BadRequestException("Card is expired!");
+    }
 
 }

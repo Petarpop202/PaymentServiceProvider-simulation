@@ -4,7 +4,6 @@ import lombok.*;
 import org.example.model.enums.PaymentStatus;
 
 import javax.persistence.*;
-import java.net.URL;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,9 +19,6 @@ public class Payment {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "merchant_id")
-    private String merchantId;
-
     @Column(name = "merchant_order_id")
     private Long merchantOrderId;
 
@@ -34,22 +30,4 @@ public class Payment {
 
     @Enumerated
     private PaymentStatus status;
-
-    @Column(name = "valid_until")
-    private LocalDateTime validUntil;
-
-    @Column
-    private String issuerCardNumber;
-
-    @Column
-    private String acquirerCardNumber;
-
-    @Column
-    private URL successUrl;
-
-    @Column
-    private URL errorUrl;
-
-    @Column
-    private URL failedUrl;
 }

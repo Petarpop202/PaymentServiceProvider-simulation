@@ -1,35 +1,34 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.dto.CardPaymentRequestDto;
-import org.example.dto.PaymentRequestFromClientDto;
+import org.example.dto.CardPaymentRequest;
+import org.example.dto.PaymentRequestFromClient;
+import org.example.exception.NotFoundException;
 import org.example.model.Agency;
 import org.example.repository.IAgencyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import java.net.URL;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class CardPaymentService {
 
     private final IAgencyRepository agencyRepository;
 
-    public CardPaymentRequestDto createCardPaymentRequest(PaymentRequestFromClientDto paymentRequestDto) throws Exception {
-        Agency agency = agencyRepository.findById(paymentRequestDto.getMerchantOrderId()).orElseGet(null);
-        if(agency == null)
-            throw new Exception("Agency not founded!");
-        return new CardPaymentRequestDto(
+    public CardPaymentRequest createCardPaymentRequest(PaymentRequestFromClient paymentRequestDto) throws Exception {
+        Agency agency = agencyRepository.findById(paymentRequestDto.getMerchantOrderId())
+                .orElseThrow(() -> new NotFoundException("Agency not found!"));
+
+        return new CardPaymentRequest(
                 agency.getMerchantId(),
                 agency.getMerchantPassword(),
                 paymentRequestDto.getMerchantOrderId(),
                 paymentRequestDto.getAmount(),
                 paymentRequestDto.getTimeStamp(),
-                "Success!",
-                "Failed!",
-                "Error!"
+                new URL("http://localhost:4000/success"),
+                new URL("http://localhost:4000/failed"),
+                new URL("http://localhost:4000/error")
         );
     }
 }

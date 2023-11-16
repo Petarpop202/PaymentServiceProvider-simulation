@@ -5,11 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.net.URL;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CardPaymentResponseDto {
-    private URL statusUrl;
+public class CardPaymentResponse {
+    private String statusUrl;
 }

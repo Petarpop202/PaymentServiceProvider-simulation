@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CardPaymentRequestDto {
+public class CardPaymentRequest {
     private Long paymentId;
     private String pan;
     private String securityCode;

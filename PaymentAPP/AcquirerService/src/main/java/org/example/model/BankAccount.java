@@ -36,5 +36,5 @@ public class BankAccount {
     private Date expirationDate;
 
     @Column
-    private float amount;
+    private float balance;
 }
