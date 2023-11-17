@@ -27,6 +27,7 @@ public class TransactionDetailsService {
         TransactionDetails details = new TransactionDetails();
         details.setMerchantOrderId(payment.getMerchantOrderId());
         details.setPaymentId(payment.getId());
+        details.setPaymentStatus(payment.getStatus());
 
         final String uri = "http://localhost:9003/api/payment/acquirer-bank-response";
         ResponseEntity<TransactionDetails> responseEntity = restTemplate.postForEntity(

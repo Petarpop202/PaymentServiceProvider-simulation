@@ -10,21 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/payment")
+@CrossOrigin
 public class PaymentController {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
-    private CardPaymentService cardPaymentService;
+    private final CardPaymentService cardPaymentService;
+
+    public PaymentController(CardPaymentService cardPaymentService){this.cardPaymentService = cardPaymentService;}
+
 
     @PostMapping(
             value= "/card-payment",
@@ -43,6 +43,7 @@ public class PaymentController {
 
         if(responseDto == null)
             throw new NotFoundException("Bank account not found!");
+        cardPaymentService.createPayment(paymentRequestDto,responseDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -52,5 +53,6 @@ public class PaymentController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public void acquirerBankResponse(@RequestBody TransactionDetails transactionDetails){
+        cardPaymentService.finishPayment(transactionDetails);
     }
 }
