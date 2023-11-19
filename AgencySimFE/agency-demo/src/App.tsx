@@ -7,8 +7,9 @@ function App() {
   const [paid, setPaid] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState('');
 
-  useEffect(() => {
-    const handlePayment = async () => {
+
+   async function pay() {
+    try {
       const timeStamp = new Date().toISOString();
 
       const paymentData = {
@@ -16,32 +17,27 @@ function App() {
         merchantOrderId: 1,
         timeStamp,
       };
+      const response = await fetch('http://localhost:9003/api/payment/card-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentData),
+      });
 
-      try {
-        const response = await fetch('http://localhost:9003/api/payment/card-payment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(paymentData),
-        });
+      if (response.ok) {
+        console.log('Uspešno plaćeno!');
+        const responseData = await response.json();
 
-        if (response.ok) {
-          console.log('Uspešno plaćeno!');
-          const responseData = await response.json();
-
-          setRedirectUrl(responseData.paymentUrl);
-          setPaid(true);
-        } else {
-          console.error('Greška prilikom plaćanja.');
-        }
-      } catch (error) {
-        console.error('Greška prilikom slanja podataka na backend.', error);
+        setRedirectUrl(responseData.paymentUrl);
+        setPaid(true);
+      } else {
+        console.error('Greška prilikom plaćanja.');
       }
-    };
-
-    handlePayment();
-  }, [amount]);
+    } catch (error) {
+      console.error('Greška prilikom slanja podataka na backend.', error);
+    }
+  };
 
   useEffect(() => {
     if (paid && redirectUrl) {
@@ -55,7 +51,7 @@ function App() {
         <form>
           <p>Markirana roba</p>
           <p>Cena: {amount} dinara</p>
-          <button type="button" onClick={() => setAmount(12000)}>
+          <button type="button" onClick={() => pay()}>
             Plati
           </button>
         </form>

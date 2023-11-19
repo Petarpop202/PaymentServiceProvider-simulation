@@ -1,13 +1,13 @@
-body{
-    background: #ddd;
+body {
+    background: #f4f4f4;
     min-height: 100vh;
     vertical-align: middle;
     justify-content: center;
     align-items: center;
     display: flex;
-    
 }
-.card{
+
+.card {
     margin: auto;
     width: 50vh;
     padding: 3rem 3.5rem;
@@ -15,45 +15,46 @@ body{
 }
 
 .mt-50 {
-    margin-top: 50px
+    margin-top: 50px;
 }
 
 .ml-50 {
-    margin-left: 20px
+    margin-left: 20px;
 }
 
 .mr-50 {
-    margin-right: 50px
+    margin-right: 50px;
 }
 
 .mb-50 {
-    margin-bottom: 50px
+    margin-bottom: 50px;
 }
 
-@media(max-width:767px){
-    .card{
+@media(max-width: 767px) {
+    .card {
         width: 90%;
         padding: 1.5rem;
     }
 }
 
-@media(height:1366px){
-    .card{
+@media(height: 1366px) {
+    .card {
         width: 90%;
         padding: 8vh;
     }
 }
 
-.card-title{
+.card-title {
     font-weight: 700;
     font-size: 2.5em;
+    color: #333;
 }
 
-.nav{
+.nav {
     display: flex;
 }
 
-.nav ul{
+.nav ul {
     list-style-type: none;
     display: flex;
     padding-inline-start: unset;
@@ -63,112 +64,110 @@ body{
     vertical-align: middle;
 }
 
-.nav li{
+.nav li {
     padding: 1rem;
 }
 
-.nav li a{
-    color: black;
+.nav li a {
+    color: #333;
     text-decoration: none;
 }
 
-.active{
-    border-bottom: 2px solid black;
+.active {
+    border-bottom: 2px solid #333;
     font-weight: bold;
-
 }
 
-input{
+input {
     border: none;
     outline: none;
     font-size: 1rem;
     font-weight: 600;
-    color: #000;
+    color: #333;
     width: 100%;
     min-width: unset;
-    background-color: black;
-    border-color: black;
+    background-color: #fff;
+    border-color: #ccc;
     margin: 0;
 }
-form a{
-    color:rgb(0, 0, 0);
+
+form a {
+    color: #333;
     text-decoration: none;
     font-size: 1rem;
     font-weight: bold;
 }
-/*
-form a:hover{
-    color:grey;
-    text-decoration: none;
-}
-*/
-form .row{
-    margin: 0;
-    overflow: hidden;
-}
-form .row-1{
-    border: 1px solid rgba(0, 0, 0, 0.137);
+
+form .row-1 {
+    border: 1px solid #ccc;
     padding: 0.3rem;
     outline: none;
     width: 100%;
     min-width: unset;
     border-radius: 5px;
-    background-color: rgba(56, 57, 58, 0.301);
-    border-color: rgba(0, 0, 0, 0.459);
+    background-color: #f9f9f9;
+    border-color: #ccc;
     margin: 2vh 0;
     overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 10px;
+    cursor: pointer;
 }
 
-form .row .col-2,.col-3{
+form .row-1:hover {
+    background-color: #eee;
+}
+
+form .row .col-2,
+.col-3 {
     display: flex;
     align-items: center;
     text-align: center;
     padding: 0 1vh;
 }
 
-form .row .col-2{
+form .row .col-2 {
     padding-right: 0;
 }
 
-#card-header{
+#card-header {
     font-weight: bold;
     font-size: 1.0rem;
-}
-#card-inner{
-    font-size: 0.7rem;
-    color: gray;
+    color: #333;
 }
 
-.btn{
+#card-inner {
+    font-size: 0.7rem;
+    color: #666;
+}
+
+.btn {
     width: 100%;
-    background-color: rgb(65, 202, 127);
-    border-color: rgb(65, 202, 127);
+    background-color: #5eab7d;
+    border-color: #5eab7d;
     color: white;
     justify-content: center;
     padding: 2vh 0;
     margin-top: 3vh;
+    cursor: pointer;
 }
-.btn:focus{
+
+.btn:focus {
     box-shadow: none;
     outline: none;
     box-shadow: none;
     color: white;
     -webkit-box-shadow: none;
     -webkit-user-select: none;
-    transition: none; 
+    transition: none;
 }
-.btn:hover{
-    color: white;
+
+.btn:hover {
+    background-color: #4c956b;
 }
-input:focus::-webkit-input-placeholder { 
-    color:transparent; 
-}
-input:focus:-moz-placeholder { 
-    color:transparent; 
-} 
-input:focus::-moz-placeholder { 
-    color:transparent; 
-} 
-input:focus:-ms-input-placeholder { 
-    color:transparent; 
-}
+
+.row-1.selected {
+    background-color: #eee; 
+  }
