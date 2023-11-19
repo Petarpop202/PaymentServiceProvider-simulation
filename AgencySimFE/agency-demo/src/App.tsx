@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 
 
+
 function App() {
   const [amount, setAmount] = useState(12000);
   const [paid, setPaid] = useState(false);
@@ -10,7 +11,9 @@ function App() {
 
    async function pay() {
     try {
-      const timeStamp = new Date().toISOString();
+      const timeStamp = new Date();
+      timeStamp.setHours(timeStamp.getHours() + 1);
+      timeStamp.toISOString();
 
       const paymentData = {
         amount,

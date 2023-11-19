@@ -3,16 +3,18 @@ import './CreditCardForm.css';
 import { useParams } from 'react-router-dom';
 
 interface CardFormData {
+  paymentId: string;
   pan: string;
-  cvc: string;
+  securityCode: string;
   expirationDate: string;
   cardHolderName: string;
 }
 
 export default function CreditCardForm() {
   const [formData, setFormData] = useState<CardFormData>({
+    paymentId: '',
     pan: '',
-    cvc: '',
+    securityCode: '',
     expirationDate: '',
     cardHolderName: '',
   });
@@ -22,20 +24,58 @@ export default function CreditCardForm() {
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
-    if (name === 'pan' && value.length > 16) return;
-    if (name === 'cvc' && value.length > 3) return;
+    if (name === 'pan' && value.length > 19) return;
+    if (name === 'securityCode' && value.length > 3) return;
+
+    const formattedPan = value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
 
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: name === 'pan' ? formattedPan : value,
     });
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    // Validacija
+    if (!formData.pan || !formData.securityCode || !formData.expirationDate || !formData.cardHolderName) {
+      console.error('Please fill in all required fields.');
+      return;
+    }
+    const refDate = new Date();
+    const expirationDate1 = new Date(formData.expirationDate);
+    if(formData.pan.length < 19 || formData.securityCode.length < 3 || expirationDate1.getTime() <= refDate.getTime())
+      return;
 
-    console.log('Submitted data:', formData);
+    try {
+      const formattedPan = formData.pan.replace(/\s/g, '');
+
+      const expirationDate = new Date(`${formData.expirationDate}-01T00:00:00`).toISOString();
+
+      const response = await fetch('http://localhost:9000/api/aquirer/card-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          paymentId: id,
+          pan: formattedPan,
+          securityCode: formData.securityCode,
+          expirationDate,
+          cardHolderName: formData.cardHolderName,
+        }),
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log(responseData.statusUrl);
+      } else {
+        console.error('Error processing payment.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -56,12 +96,12 @@ export default function CreditCardForm() {
 
         <div className="form-group-row">
           <div className="form-group">
-            <label htmlFor="cvc">CVC:</label>
+            <label htmlFor="securityCode">CVC:</label>
             <input
               type="text"
-              id="cvc"
-              name="cvc"
-              value={formData.cvc}
+              id="securityCode"
+              name="securityCode"
+              value={formData.securityCode}
               onChange={handleInputChange}
               placeholder="CVC"
             />
@@ -70,12 +110,11 @@ export default function CreditCardForm() {
           <div className="form-group">
             <label htmlFor="expirationDate">Expiration Date:</label>
             <input
-              type="text"
+              type="month"
               id="expirationDate"
               name="expirationDate"
               value={formData.expirationDate}
               onChange={handleInputChange}
-              placeholder="MM/YY"
             />
           </div>
         </div>
@@ -92,7 +131,7 @@ export default function CreditCardForm() {
           />
         </div>
 
-        <button type="submit" className="btn d-flex mx-auto"><b>Submit</b></button>
+        <button type="submit" className="btn d-flex mx-auto" disabled={!formData.pan || !formData.securityCode || !formData.expirationDate || !formData.cardHolderName}><b>Submit</b></button>
       </form>
     </div>
   );

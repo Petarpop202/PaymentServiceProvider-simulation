@@ -36,7 +36,7 @@ public class InBankPaymentService {
     public void doCardPayment(Payment payment, CardPaymentRequest cardPaymentRequestDto) {
         Agency agency = agencyRepository.findAgencyByMerchantId(payment.getMerchantId())
                 .orElseThrow(() -> new NotFoundException("No seller account exist!"));;
-        CreditCard creditCard = creditCardRepository.findCreditCardByPan(cardPaymentRequestDto.getCardHolderName())
+        CreditCard creditCard = creditCardRepository.findCreditCardByCardHolderName(cardPaymentRequestDto.getCardHolderName())
                 .orElseThrow(() -> new NotFoundException("No buyer account exist!"));
 
         if(payment.getAmount() > creditCard.getBankAccount().getBalance())
@@ -61,8 +61,6 @@ public class InBankPaymentService {
 
     // todo: Pronalazenje racuna preko pana ne preko card holder-a
     private void checkAllParams(CardPaymentRequest cardPaymentRequestDto) {
-//        BankAccount bankAccount = bankAccountRepository.findBankAccountByCardHolderName(cardPaymentRequestDto.getCardHolderName())
-//                .orElseThrow(() -> new NotFoundException("Account doesn't exist!"));
         CreditCard creditCard = creditCardRepository.findCreditCardByCardHolderName(cardPaymentRequestDto.getCardHolderName())
                 .orElseThrow(() -> new NotFoundException("Account doesn't exist!"));
 
