@@ -1,18 +1,16 @@
 package org.example.controller;
 
-import org.example.dto.CardPaymentRequest;
-import org.example.dto.CardPaymentResponse;
-import org.example.dto.PaymentRequestFromClient;
-import org.example.dto.TransactionDetails;
+import org.example.dto.*;
 import org.example.exception.NotFoundException;
 import org.example.service.CardPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/payment")
@@ -54,5 +52,18 @@ public class PaymentController {
     )
     public void acquirerBankResponse(@RequestBody TransactionDetails transactionDetails){
         cardPaymentService.finishPayment(transactionDetails);
+    }
+
+    @PostMapping(value = "/pay-pal-create")
+    public String createPayPalOrder(@RequestBody PayPalRequest payPalRequest) {
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://localhost:9004/api/pay-pal/create-payment", payPalRequest, String.class);
+        return responseEntity.getBody();
+    }
+
+    @PostMapping(value = "/pay-pal-execute")
+    public ResponseEntity<?> executePayPalOrder(@RequestParam("token") String token) {
+        Map<String, String> queryParam = new HashMap<>();
+        queryParam.put("token", token);
+        return restTemplate.postForEntity("http://localhost:9004/api/pay-pal/execute-payment", null, String.class, queryParam);
     }
 }
