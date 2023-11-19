@@ -8,7 +8,4 @@ import java.util.Optional;
 
 @Repository
 public interface IBankAccountRepository extends JpaRepository<BankAccount, Long> {
-    Optional<BankAccount> findBankAccountByMerchantId(String merchantId);
-
-    Optional<BankAccount> findBankAccountByCardHolderName(String cardHolderName);
 }

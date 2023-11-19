@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ICreditCardRepository extends JpaRepository<CreditCard, Long> {
 
-    Optional<CreditCard> findByPan(String pan);
+    Optional<CreditCard> findCreditCardByPan(String pan);
 
     Optional<CreditCard> findCreditCardByCardHolderName(String cardHolderName);
 }

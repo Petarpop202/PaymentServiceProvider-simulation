@@ -1,2 +1,7 @@
-insert into bank_accounts(merchant_id, merchant_password, pan, card_holder_name, security_code, expiration_date, balance) values ('merchant_id-1699895821153', '$2a$12$IJGAeaOD9OloL73IYj6fE.u9n1RmkCMP4EvT.U0DydU3RJ/tWmsaO', '$2a$12$ayDiNqVeG3wIJfuX9ArFQugQlDQUVILIypH5RYBq.byIe88utogjC', 'Thopok Bergrsson', '$2a$12$C4pTLpsPrQyJHQA18XoUBukTowHrVdm1aPRejVfdMFuFXPuTvg22O', '2030-12-01 00:00:00', 70000), /*5198886469763513,Thopok Bergrsson,390,2030-12-01 00:00:00*/
-                                                                                        ('merchant_id-16998958211533', '$2a$12$IJGAeaOD9OloL73IYj6fE.u9n1RmkCMP4EvT.U0DydU3RJ/tWmsaO', '$2a$12$WV4BFO83z6leK/yxUwI28unqxcl8gUxBSGRTjOszOPuCKxQ205wvq', 'Chinedum Sebhat', '$2a$12$iUGxMRtjP05Ofyjwp7v0PuE9RY302crVE1pae9lzArec0lifbizM2', '2029-07-01 00:00:00', 80000); /*5198885458603292,Chinedum Sebhat,410,2029-07-01 00:00:00*/
+insert into bank_accounts(account_number, balance) values ('xxxxxxxxxxxxxxxxxxxxxxxxxx', 12345), ('yyyyyyyyyyyyyyyyyyyyyyyyyy', 445 );
+
+insert into agencies(merchant_id, merchant_password, bank_account_id) values ('merchant_id-1699895821153', '$2a$12$IJGAeaOD9OloL73IYj6fE.u9n1RmkCMP4EvT.U0DydU3RJ/tWmsaO', 1);
+
+insert into credit_cards(pan, card_holder_name, security_code, expiration_date, bank_account_id) values ('$2a$12$EfWoGiOnxcXRW6lfzXhJjuI9FegE4ZQtAQ1o.UMb3CXcukD0eFmD2', 'Thopok Bergrsson', '$2a$12$2l9AzLMaWiXmktQG4k4fB.f/hhQTZuRKDGR1lOMf8Tu7nGvzXFpoG', '2026-08-01 00:00:00', 2); /*5258388321604651,Thopok Bergrsson,547,2030-12-01 00:00:00*/
+
+insert into card_prefixes(prefix) values ('511867'), ('525838'), ('535152'), ('558671');

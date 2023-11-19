@@ -17,23 +17,8 @@ public class BankAccount {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name= "merchant_id")
-    private String merchantId;
-
-    @Column(name = "merchant_password")
-    private String merchantPassword;
-
-    @Column
-    private String pan;
-
-    @Column(name = "card_holder_name")
-    private String cardHolderName;
-
-    @Column(name = "security_code")
-    private String securityCode;
-
-    @Column(name = "expiration_date")
-    private Date expirationDate;
+    @Column(name = "account_number")
+    private String accountNumber;
 
     @Column
     private float balance;

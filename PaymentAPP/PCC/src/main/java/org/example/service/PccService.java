@@ -14,12 +14,10 @@ import java.util.concurrent.TimeUnit;
 public class PccService {
 
     public void checkRequestValidity(CardPaymentRequestIssuer cardPaymentRequestIssuer) {
-        // TODO : add message to exception
-        if (!checkCreditCardNumber(cardPaymentRequestIssuer.getPan())) throw new InvalidCardNumberException("Some message");
+        if (!checkCreditCardNumber(cardPaymentRequestIssuer.getPan())) throw new InvalidCardNumberException("Invalid card number");
         Date current = new Date();
         long difference = current.getTime() - cardPaymentRequestIssuer.getAcquirerTimestamp().getTime();
-        // TODO: add message to exception
-        if (TimeUnit.MILLISECONDS.toMinutes(difference) > 10L) throw new RequestExpiredException("Some message");
+        if (TimeUnit.MILLISECONDS.toMinutes(difference) > 10L) throw new RequestExpiredException("Request expired");
     }
 
     private boolean checkCreditCardNumber(String creditCardNumber) {

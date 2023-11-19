@@ -1,5 +1,7 @@
 package org.example.exception;
 
+import org.example.dto.SuccessfulPaymentData;
+import org.example.model.PaymentStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,23 +13,24 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ExceptionResolver extends ResponseEntityExceptionHandler {
 
-//    @ExceptionHandler(BadRequestException.class)
-//    public ResponseEntity<?> badRequestException(BadRequestException exception){
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.TEXT_PLAIN);
-//        return new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.BAD_REQUEST);
-//    }
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<?> badRequestException(BadRequestException exception){
+        SuccessfulPaymentData successfulPaymentData = new SuccessfulPaymentData();
+        successfulPaymentData.setStatus(PaymentStatus.ERROR);
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> notFoundException(NotFoundException exception){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        return new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.NOT_FOUND);
+        SuccessfulPaymentData successfulPaymentData = new SuccessfulPaymentData();
+        successfulPaymentData.setStatus(PaymentStatus.ERROR);
+        return new ResponseEntity<>(successfulPaymentData, HttpStatus.NOT_FOUND);
     }
 
-//    @ExceptionHandler(ErrorException.class)
-//    public ResponseEntity<?> errorException(ErrorException exception) {
-//        CardPaymentResponse cardPaymentResponse = new CardPaymentResponse(exception.getMessage());
-//        return new ResponseEntity<>(cardPaymentResponse, HttpStatus.OK);
-//    }
+    @ExceptionHandler(NotEnoughMoneyOnAccount.class)
+    public ResponseEntity<?> notEnoughMoneyException(NotEnoughMoneyOnAccount exception) {
+        SuccessfulPaymentData successfulPaymentData = new SuccessfulPaymentData();
+        successfulPaymentData.setStatus(PaymentStatus.FAILED);
+        return new ResponseEntity<>(successfulPaymentData, HttpStatus.NOT_FOUND);
+    }
 }

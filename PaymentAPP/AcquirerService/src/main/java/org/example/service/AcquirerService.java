@@ -9,9 +9,11 @@ import org.example.dto.PspPaymentResponse;
 import org.example.exception.BadRequestException;
 import org.example.exception.ErrorException;
 import org.example.exception.NotFoundException;
+import org.example.model.Agency;
 import org.example.model.BankAccount;
 import org.example.model.Payment;
 import org.example.model.enums.PaymentStatus;
+import org.example.repository.IAgencyRepository;
 import org.example.repository.IBankAccountRepository;
 import org.example.repository.IPaymentRepository;
 import org.springframework.stereotype.Service;
@@ -33,16 +35,18 @@ public class AcquirerService {
 
     private final TransactionDetailsService transactionDetailsService;
 
+    private final IAgencyRepository agencyRepository;
+
     private static final String CARD_DETAILS_URL = "http://localhost:8000/bank/card-details/";
 
     private static final int PAYMENT_DURATION_MINUTES = 10;
 
     public PspPaymentResponse createPspPaymentResponse(PspPaymentRequest cardPaymentRequestDto) throws Exception {
-        BankAccount bankAccount = bankAccountRepository.findBankAccountByMerchantId(cardPaymentRequestDto.getMerchantId())
+        Agency agency = agencyRepository.findAgencyByMerchantId(cardPaymentRequestDto.getMerchantId())
                 .orElseThrow(()-> new NotFoundException("Agency not found!"));
 
         // todo: Da li moze provera sa equals jer se porede hashovane lozinke
-        if(!bankAccount.getMerchantPassword().equals(cardPaymentRequestDto.getMerchantPassword()))
+        if(!agency.getMerchantPassword().equals(cardPaymentRequestDto.getMerchantPassword()))
             throw new BadRequestException("Invalid parameters!");
 
         return generatePaymentIdAndUrl(cardPaymentRequestDto);
