@@ -33,7 +33,7 @@ public class AcquirerService {
 
     private final TransactionDetailsService transactionDetailsService;
 
-    private static final String CARD_DETAILS_URL = "http://localhost:8000/bank/card-details/";
+    private static final String CARD_DETAILS_URL = "http://localhost:4000/choose-payment/";
 
     private static final int PAYMENT_DURATION_MINUTES = 10;
 

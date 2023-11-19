@@ -33,9 +33,9 @@ public class CardPaymentService {
                 paymentRequestDto.getMerchantOrderId(),
                 paymentRequestDto.getAmount(),
                 paymentRequestDto.getTimeStamp(),
-                new URL("http://localhost:4000/success"),
-                new URL("http://localhost:4000/failed"),
-                new URL("http://localhost:4000/error")
+                new URL("http://localhost:4000/payment-success"),
+                new URL("http://localhost:4000/payment-failed"),
+                new URL("http://localhost:4000/payment-error")
         );
     }
 
