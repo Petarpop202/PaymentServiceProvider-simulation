@@ -25,7 +25,7 @@ public class Agency {
     private String merchantPassword;
 
     @Getter
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "bank_account_id")
     private BankAccount bankAccount;
 }

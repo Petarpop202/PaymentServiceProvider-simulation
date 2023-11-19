@@ -17,20 +17,20 @@ public class ExceptionResolver {
     public ResponseEntity<?> badRequestException(BadRequestException exception){
         SuccessfulPaymentData successfulPaymentData = new SuccessfulPaymentData();
         successfulPaymentData.setStatus(PaymentStatus.ERROR);
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(successfulPaymentData, HttpStatus.OK);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> notFoundException(NotFoundException exception){
         SuccessfulPaymentData successfulPaymentData = new SuccessfulPaymentData();
         successfulPaymentData.setStatus(PaymentStatus.ERROR);
-        return new ResponseEntity<>(successfulPaymentData, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(successfulPaymentData, HttpStatus.OK);
     }
 
     @ExceptionHandler(NotEnoughMoneyOnAccount.class)
     public ResponseEntity<?> notEnoughMoneyException(NotEnoughMoneyOnAccount exception) {
         SuccessfulPaymentData successfulPaymentData = new SuccessfulPaymentData();
         successfulPaymentData.setStatus(PaymentStatus.FAILED);
-        return new ResponseEntity<>(successfulPaymentData, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(successfulPaymentData, HttpStatus.OK);
     }
 }

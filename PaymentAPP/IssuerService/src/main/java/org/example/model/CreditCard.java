@@ -32,7 +32,7 @@ public class CreditCard {
     @Column(name = "expiration_date")
     private Date expirationDate;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "bank_account_id")
     private BankAccount bankAccount;
 }

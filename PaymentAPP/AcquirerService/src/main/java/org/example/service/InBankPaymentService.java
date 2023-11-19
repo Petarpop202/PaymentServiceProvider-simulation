@@ -34,19 +34,14 @@ public class InBankPaymentService {
     private final PasswordEncoder bcryptEncoder;
 
     public void doCardPayment(Payment payment, CardPaymentRequest cardPaymentRequestDto) {
-//        BankAccount sellerAccount = bankAccountRepository.findBankAccountByMerchantId(payment.getMerchantId())
-//                .orElseThrow(() -> new NotFoundException("No seller account exist!"));
         Agency agency = agencyRepository.findAgencyByMerchantId(payment.getMerchantId())
                 .orElseThrow(() -> new NotFoundException("No seller account exist!"));;
         CreditCard creditCard = creditCardRepository.findCreditCardByPan(cardPaymentRequestDto.getCardHolderName())
                 .orElseThrow(() -> new NotFoundException("No buyer account exist!"));
-//        BankAccount buyerAccount = bankAccountRepository.findBankAccountByCardHolderName(cardPaymentRequestDto.getCardHolderName())
-//                .orElseThrow(() -> new NotFoundException("No buyer account exist!"));
 
         if(payment.getAmount() > creditCard.getBankAccount().getBalance())
             transactionDetailsService.failedPayment(payment, "Not enough money!");
 
-        //payment.setAcquirerCardNumber(sellerAccount.getPan());
         payment.setIssuerCardNumber(creditCard.getPan());
         transferMoney(creditCard.getBankAccount(),agency.getBankAccount(),payment);
         transactionDetailsService.successPayment(payment);

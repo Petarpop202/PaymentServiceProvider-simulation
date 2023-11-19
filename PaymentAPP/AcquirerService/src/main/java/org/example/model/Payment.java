@@ -6,6 +6,7 @@ import org.example.model.enums.PaymentStatus;
 import javax.persistence.*;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "payments")
@@ -42,9 +43,6 @@ public class Payment {
     private String issuerCardNumber;
 
     @Column
-    private String acquirerCardNumber;
-
-    @Column
     private URL successUrl;
 
     @Column
@@ -52,4 +50,11 @@ public class Payment {
 
     @Column
     private URL failedUrl;
+
+    @Column(name = "issuer_order_id")
+    private long issuerOrderId;
+
+    @Column(name = "issuer_timestamp")
+    private Date issuerTimestamp;
+
 }
