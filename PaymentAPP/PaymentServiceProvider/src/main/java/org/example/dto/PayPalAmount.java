@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PayPalRequest {
+public class PayPalAmount {
 
-    private Long paymentId;
+    private float amount;
 }

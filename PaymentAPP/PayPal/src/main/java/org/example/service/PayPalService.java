@@ -24,7 +24,7 @@ public class PayPalService {
     public String createPayment(float amount) throws IOException {
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.checkoutPaymentIntent("CAPTURE");
-        AmountWithBreakdown amountBreakdown = new AmountWithBreakdown().currencyCode("EUR").value(String.valueOf(amount));
+        AmountWithBreakdown amountBreakdown = new AmountWithBreakdown().currencyCode("USD").value(String.valueOf(amount));
         PurchaseUnitRequest purchaseUnitRequest = new PurchaseUnitRequest().amountWithBreakdown(amountBreakdown);
         orderRequest.purchaseUnits(List.of(purchaseUnitRequest));
         ApplicationContext applicationContext = new ApplicationContext()

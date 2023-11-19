@@ -23,6 +23,7 @@ public class PayPalController {
 
     @PostMapping(value = "/execute-payment")
     public ResponseEntity<?> executePayment(@RequestParam("token") String token) throws IOException {
+        System.out.println(token);
         String message = payPalService.executePayment(token);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }

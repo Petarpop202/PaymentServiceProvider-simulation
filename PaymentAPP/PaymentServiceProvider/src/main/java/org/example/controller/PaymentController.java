@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.dto.*;
 import org.example.exception.NotFoundException;
 import org.example.service.CardPaymentService;
+import org.example.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,9 @@ public class PaymentController {
     private RestTemplate restTemplate;
 
     private final CardPaymentService cardPaymentService;
+
+    @Autowired
+    private PaymentService paymentService;
 
     public PaymentController(CardPaymentService cardPaymentService){this.cardPaymentService = cardPaymentService;}
 
@@ -56,14 +60,17 @@ public class PaymentController {
 
     @PostMapping(value = "/pay-pal-create")
     public String createPayPalOrder(@RequestBody PayPalRequest payPalRequest) {
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://localhost:9004/api/pay-pal/create-payment", payPalRequest, String.class);
+        float paymentAmount = paymentService.getPaymentAmount(payPalRequest.getPaymentId());
+        PayPalAmount payPalAmount = new PayPalAmount(paymentAmount);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://localhost:9004/api/pay-pal/create-payment", payPalAmount, String.class);
         return responseEntity.getBody();
     }
 
     @PostMapping(value = "/pay-pal-execute")
     public ResponseEntity<?> executePayPalOrder(@RequestParam("token") String token) {
+        System.out.println(token);
         Map<String, String> queryParam = new HashMap<>();
         queryParam.put("token", token);
-        return restTemplate.postForEntity("http://localhost:9004/api/pay-pal/execute-payment", null, String.class, queryParam);
+        return restTemplate.postForEntity("http://localhost:9004/api/pay-pal/execute-payment?token=" + token, null, String.class);
     }
 }
