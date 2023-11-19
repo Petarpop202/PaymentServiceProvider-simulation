@@ -13,7 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 @ControllerAdvice
-public class ExceptionResolver extends ResponseEntityExceptionHandler {
+public class ExceptionResolver {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<?> badRequestException(BadRequestException exception){
