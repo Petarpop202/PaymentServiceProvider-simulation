@@ -2,6 +2,9 @@ package org.example.controller;
 
 import org.example.dto.*;
 import org.example.exception.NotFoundException;
+import org.example.model.Payment;
+import org.example.model.enums.PaymentStatus;
+import org.example.repository.IPaymentRepository;
 import org.example.service.CardPaymentService;
 import org.example.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,22 +23,35 @@ public class PaymentController {
     @Autowired
     private RestTemplate restTemplate;
 
+    private final IPaymentRepository paymentRepository;
     private final CardPaymentService cardPaymentService;
 
     @Autowired
     private PaymentService paymentService;
 
-    public PaymentController(CardPaymentService cardPaymentService){this.cardPaymentService = cardPaymentService;}
+    public PaymentController(CardPaymentService cardPaymentService, IPaymentRepository paymentRepository){this.cardPaymentService = cardPaymentService;this.paymentRepository = paymentRepository;}
 
 
     @PostMapping(
-            value= "/card-payment",
+            value= "/payment-request",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> cardPaymentRequest(@RequestBody PaymentRequestFromClient paymentRequestDto) throws Exception {
+    public ResponseEntity<?> paymentRequest(@RequestBody PaymentRequestFromClient paymentRequestDto) throws Exception {
+        CardPaymentResponse responseDto = cardPaymentService.createPayment(paymentRequestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping(
+            value="/card-payment-request",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> cardPaymentRequest(@RequestBody IdCardRequest paymentId) throws Exception {
+        Payment payment = paymentRepository.findById(paymentId.getPaymentId())
+                .orElseThrow(()-> new NotFoundException("Not found"));
+        CardPaymentRequest cardPaymentRequestDto = cardPaymentService.createCardPaymentRequest(payment);
         final String uri = "http://localhost:9000/api/aquirer/psp-payment-response";
-        CardPaymentRequest cardPaymentRequestDto = cardPaymentService.createCardPaymentRequest(paymentRequestDto);
 
         ResponseEntity<CardPaymentResponse> responseEntity = restTemplate.postForEntity(
                 uri,
@@ -45,7 +61,6 @@ public class PaymentController {
 
         if(responseDto == null)
             throw new NotFoundException("Bank account not found!");
-        cardPaymentService.createPayment(paymentRequestDto,responseDto);
         return ResponseEntity.ok(responseDto);
     }
 

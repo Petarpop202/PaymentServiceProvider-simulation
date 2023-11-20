@@ -4,6 +4,8 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import Router from "./app/router/Router";
 import "./index.css";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -12,6 +14,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
+    
       <PayPalScriptProvider
         options={{
           clientId:
@@ -21,5 +24,6 @@ root.render(
         <Router />
       </PayPalScriptProvider>
     </BrowserRouter>
+    <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
   </React.StrictMode>
 );

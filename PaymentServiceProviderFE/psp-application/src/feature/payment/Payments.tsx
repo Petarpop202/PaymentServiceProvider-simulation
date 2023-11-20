@@ -1,34 +1,43 @@
-import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
-import { ChangeEvent, useState } from "react";
-import { FaBitcoin, FaCreditCard } from "react-icons/fa";
+import React, { useState, ChangeEvent, useRef, useEffect } from "react";
+import { FaBitcoin, FaCreditCard, FaPaypal } from "react-icons/fa";
 import { MdQrCodeScanner } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
-import { createOrderBE, executePayment } from "../../app/agent/agent";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { checkPaymentStatus, createOrderBE, executePayment, requestCardPayment } from "../../app/agent/agent";
 import "./Payments.css";
 
 export default function Payments() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const { id } = useParams();
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const handleOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedOption(event.target.value);
   };
 
-  const handleBuyNowClick = () => {
-    // Dodajte redirekciju na osnovu odabrane opcije
+  const handleBuyNowClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     switch (selectedOption) {
       case "creditCard":
-        navigate("/payment/credit-card/" + id); // Prilagodite ruta
-        break;
+        const order = {
+          paymentId: id as string,
+        };
+        await requestCardPayment(order)
+        .then((res) => {
+          window.location.href = res.data.paymentUrl;
+        })
+        .catch((err) =>{
+          console.log(err);
+        })
+        return;
       case "ips":
-        navigate("/choose-payment/" + id); // Prilagodite ruta
         break;
       case "crypto":
-        navigate("/choose-payment/" + id); // Prilagodite ruta
+        break;
+      case "payPal":
         break;
       default:
-        navigate("/choose-payment/" + id); // Prilagodite ruta
         break;
     }
   };
@@ -51,12 +60,42 @@ export default function Payments() {
     console.log(data);
     await executePayment(data["orderID"])
       .then((res) => {
-        console.log(res.data);
+        navigate("/success-payment");
       })
       .catch((err) => {
-        console.log(err);
+        navigate("/error-payment");
       });
   };
+
+  useEffect(() => {
+    console.log('UseEffect triggered');
+    const checkStatus = async () => {
+      console.log('Check status');
+      if (loading) {
+        const order = {
+          paymentId: id as string,
+        };
+        await checkPaymentStatus(order)
+          .then((res) => {
+            if (res.data.status === 'SUCCESS') {
+              window.location.href = res.data.successUrl;
+            } else if(res.data.status === 'ERROR'){
+              window.location.href = res.data.errorUrl;
+            }else if(res.data.status === 'FAILED'){
+              window.location.href = res.data.failedUrl;
+            }else {
+              setLoading(false);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setLoading(false); 
+          });
+      }
+    };
+
+    checkStatus();
+  }, [loading, id]);
 
   return (
     <body className="body">
@@ -122,18 +161,21 @@ export default function Payments() {
             }`}
             onClick={() => setSelectedOption("payPal")}
           >
-            <PayPalScriptProvider
-              options={{
-                clientId:
-                  "ATcRmO0vakND1PSs7S9UHyplUXzY0DJySmkzNhKgIijUx_HGtzYogtDgduU7YgfNDlz_VffqRrCMwDe8",
-              }}
-            >
-              <PayPalButtons
-                fundingSource="paypal"
-                createOrder={onCreate}
-                onApprove={onApprove}
+            <label htmlFor="payPal" className="col-2">
+              <FaPaypal size={35} />
+              <span className="ml-50">Pay-Pal</span>
+            </label>
+            <div className="col-7">
+              <input
+                type="radio"
+                id="payPal"
+                name="paymentOption"
+                value="payPal"
+                onChange={handleOptionChange}
+                checked={selectedOption === "payPal"}
+                style={{ display: "none" }}
               />
-            </PayPalScriptProvider>
+            </div>
           </div>
 
           <div
@@ -159,7 +201,35 @@ export default function Payments() {
             </div>
           </div>
 
-          <button className="btn d-flex mx-auto" onClick={handleBuyNowClick}>
+          {selectedOption === "payPal" && (
+          <PayPalScriptProvider
+            options={{
+              clientId:
+                "ATcRmO0vakND1PSs7S9UHyplUXzY0DJySmkzNhKgIijUx_HGtzYogtDgduU7YgfNDlz_VffqRrCMwDe8",
+            }}
+          >
+            <div className="col-7">
+              <PayPalButtons
+                fundingSource="paypal"
+                createOrder={onCreate}
+                onApprove={onApprove}
+                style={{ color: "white", shape: "rect", tagline: false}}
+              />
+            </div>
+          </PayPalScriptProvider>
+        )}
+
+          <button
+            className="btn d-flex mx-auto"
+            onClick={handleBuyNowClick}
+            style={{ 
+              display: selectedOption === "payPal" ? "none" : "block" ,
+              backgroundColor: "#ffffff",
+              border: "2px solid #a1aaa5",
+              color: "#333333",
+              fontSize: "1.1rem"
+            }}
+          >
             <b>Buy now</b>
           </button>
         </form>

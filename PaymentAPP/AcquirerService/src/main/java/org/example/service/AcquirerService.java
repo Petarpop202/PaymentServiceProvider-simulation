@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Random;
 
 import org.example.dto.*;
@@ -41,7 +42,7 @@ public class AcquirerService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private static final String CARD_DETAILS_URL = "http://localhost:4000/choose-payment/";
+    private static final String CARD_DETAILS_URL = "http://localhost:4000/payment/credit-card/";
 
     private final IAgencyRepository agencyRepository;
 
@@ -51,18 +52,21 @@ public class AcquirerService {
         Agency agency = agencyRepository.findAgencyByMerchantId(cardPaymentRequestDto.getMerchantId())
                 .orElseThrow(() -> new NotFoundException("Agency not found!"));
 
-        // todo: Da li moze provera sa equals jer se porede hashovane lozinke
+        Optional<Payment> optionalPayment = paymentRepository.findById(cardPaymentRequestDto.getPaymentId());
+        if(optionalPayment.isPresent())
+            throw new BadRequestException("Payment already done done!");
+
         if (!agency.getMerchantPassword().equals(cardPaymentRequestDto.getMerchantPassword()))
             throw new BadRequestException("Invalid parameters!");
 
         return generatePaymentIdAndUrl(cardPaymentRequestDto);
     }
 
-    // todo: URL-ovi zakucane gluposti
     private PspPaymentResponse generatePaymentIdAndUrl(PspPaymentRequest cardPaymentRequestDto)
             throws MalformedURLException {
 
         Payment payment = new Payment();
+        payment.setId(cardPaymentRequestDto.getPaymentId());
         payment.setMerchantId(cardPaymentRequestDto.getMerchantId());
         payment.setStatus(PaymentStatus.IN_PROGRESS);
         payment.setAmount(cardPaymentRequestDto.getAmount());
@@ -109,6 +113,8 @@ public class AcquirerService {
                 SuccessfulPaymentData.class );
 
         SuccessfulPaymentData responseDto = responseEntity.getBody();
+        if(responseDto == null)
+            throw new NotFoundException("Not found acc!");
         differentBankPaymentDetails(responseDto, payment);
     }
 

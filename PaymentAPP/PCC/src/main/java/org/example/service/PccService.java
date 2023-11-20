@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class PccService {
 
     public void checkRequestValidity(CardPaymentRequestIssuer cardPaymentRequestIssuer) {
-        if (!checkCreditCardNumber(cardPaymentRequestIssuer.getPan())) throw new InvalidCardNumberException("Invalid card number");
+        if (!checkCreditCardNumber(cardPaymentRequestIssuer.getPan())) throw new InvalidCardNumberException("Invalid parameters!");
         Date current = new Date();
         long difference = current.getTime() - cardPaymentRequestIssuer.getAcquirerTimestamp().getTime();
         if (TimeUnit.MILLISECONDS.toMinutes(difference) > 10L) throw new RequestExpiredException("Request expired");

@@ -18,7 +18,7 @@ public class ExceptionResolver {
     public ResponseEntity<?> notFoundException(InvalidCardNumberException exception){
         SuccessfulPaymentData successfulPaymentData = new SuccessfulPaymentData();
         successfulPaymentData.setStatus(PaymentStatus.ERROR);
-        return new ResponseEntity<>(successfulPaymentData, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(successfulPaymentData, HttpStatus.OK);
     }
 
     @ExceptionHandler(RequestExpiredException.class)

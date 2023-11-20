@@ -13,6 +13,7 @@ import org.example.repository.IAgencyRepository;
 import org.example.repository.IPaymentRepository;
 import org.springframework.stereotype.Service;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 @Service
@@ -23,31 +24,34 @@ public class CardPaymentService {
 
     private final IPaymentRepository paymentRepository;
 
-    public CardPaymentRequest createCardPaymentRequest(PaymentRequestFromClient paymentRequestDto) throws Exception {
-        Agency agency = agencyRepository.findById(paymentRequestDto.getMerchantOrderId())
+    private static final String PAYMENT_CHOOSE_URL = "http://localhost:4000/choose-payment/";
+
+    public CardPaymentRequest createCardPaymentRequest(Payment payment) throws Exception {
+        Agency agency = agencyRepository.findById(payment.getMerchantOrderId())
                 .orElseThrow(() -> new NotFoundException("Agency not found!"));
 
         return new CardPaymentRequest(
                 agency.getMerchantId(),
                 agency.getMerchantPassword(),
-                paymentRequestDto.getMerchantOrderId(),
-                paymentRequestDto.getAmount(),
-                paymentRequestDto.getTimeStamp(),
-                new URL("http://localhost:4000/payment-success"),
-                new URL("http://localhost:4000/payment-failed"),
-                new URL("http://localhost:4000/payment-error")
+                payment.getMerchantOrderId(),
+                payment.getAmount(),
+                payment.getTimestamp(),
+                new URL("http://localhost:4000/success-payment"),
+                new URL("http://localhost:4000/failed-payment"),
+                new URL("http://localhost:4000/error-payment"),
+                payment.getId()
         );
     }
 
-    public void createPayment(PaymentRequestFromClient paymentRequestFromClient, CardPaymentResponse responseDto) {
+    public CardPaymentResponse createPayment(PaymentRequestFromClient paymentRequestFromClient) throws MalformedURLException {
         Payment payment = new Payment();
-        payment.setId(responseDto.getPaymentId());
         payment.setTimestamp(paymentRequestFromClient.getTimeStamp());
         payment.setAmount(paymentRequestFromClient.getAmount());
         payment.setMerchantOrderId(paymentRequestFromClient.getMerchantOrderId());
         payment.setStatus(PaymentStatus.IN_PROGRESS);
 
         paymentRepository.save(payment);
+        return new CardPaymentResponse(payment.getId(), new URL(PAYMENT_CHOOSE_URL+payment.getId()));
     }
 
     public void finishPayment(TransactionDetails transactionDetails) {

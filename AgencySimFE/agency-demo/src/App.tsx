@@ -18,7 +18,7 @@ function App() {
         timeStamp,
       };
       const response = await fetch(
-        "http://localhost:9003/api/payment/card-payment",
+        "http://localhost:9003/api/payment/payment-request",
         {
           method: "POST",
           headers: {

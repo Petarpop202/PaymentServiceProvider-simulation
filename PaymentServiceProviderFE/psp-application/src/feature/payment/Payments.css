@@ -117,7 +117,7 @@ form .row-1 {
 }
 
 form .row-1:hover {
-    background-color: #eee;
+    background-color: #a7a3a3;
 }
 
 form .row .col-2,
@@ -145,29 +145,28 @@ form .row .col-2 {
 
 .btn {
     width: 100%;
-    background-color: #5eab7d;
-    border-color: #5eab7d;
-    color: white;
+    background-color: #ffffff;
+    border: 2px solid #a1aaa5;
+    color: #333333;
     justify-content: center;
     padding: 2vh 0;
     margin-top: 3vh;
     cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .btn:focus {
     box-shadow: none;
     outline: none;
-    box-shadow: none;
-    color: white;
-    -webkit-box-shadow: none;
-    -webkit-user-select: none;
-    transition: none;
+    color: #333333;
 }
 
 .btn:hover {
-    background-color: #4c956b;
+    background-color: #f4f4f4;
+    color: #000000;
 }
 
 .row-1.selected {
-    background-color: #eee; 
-  }
+    background-color: #a7a3a3;
+}

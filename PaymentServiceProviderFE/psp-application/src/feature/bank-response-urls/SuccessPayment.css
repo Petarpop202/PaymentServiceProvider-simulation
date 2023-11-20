@@ -1,0 +1,20 @@
+.success-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+  }
+  
+  .success-icon {
+    color: #28a745;
+    font-size: 5rem;
+  }
+  
+  .success-message {
+    color: #333;
+    font-size: 2rem;
+    margin-top: 1rem;
+  }
+  

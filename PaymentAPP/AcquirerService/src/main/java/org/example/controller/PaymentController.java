@@ -1,8 +1,10 @@
 package org.example.controller;
 
-import org.example.dto.CardPaymentRequest;
-import org.example.dto.CardPaymentResponse;
-import org.example.dto.PspPaymentRequest;
+import org.example.dto.*;
+import org.example.exception.NotFoundException;
+import org.example.model.Payment;
+import org.example.model.enums.PaymentStatus;
+import org.example.repository.IPaymentRepository;
 import org.example.service.AcquirerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -19,7 +21,9 @@ public class PaymentController {
 
     private final AcquirerService acquirerService;
 
-    public PaymentController(AcquirerService acquirerService){this.acquirerService = acquirerService;}
+    private final IPaymentRepository paymentRepository;
+
+    public PaymentController(AcquirerService acquirerService, IPaymentRepository paymentRepository){this.acquirerService = acquirerService;this.paymentRepository = paymentRepository;}
 
     @PostMapping(
             value = "/psp-payment-response",
@@ -39,5 +43,19 @@ public class PaymentController {
     public ResponseEntity<?> cardPayment(@RequestBody CardPaymentRequest cardPaymentRequestDto) throws MalformedURLException {
         CardPaymentResponse cardPaymentResponseDto = acquirerService.cardPayment(cardPaymentRequestDto);
         return ResponseEntity.ok(cardPaymentResponseDto);
+    }
+
+
+    @PostMapping (value = "/payment-status")
+    public ResponseEntity<?> getPaymentStatus(@RequestBody IdCardRequest paymentId){
+        Payment payment = paymentRepository.findById(paymentId.getPaymentId())
+                .orElseThrow(() -> new NotFoundException("No payment!"));
+        PaymentStatusResponse paymentStatusResponse = new PaymentStatusResponse(
+                paymentId.getPaymentId(),
+                payment.getSuccessUrl(),
+                payment.getErrorUrl(),
+                payment.getFailedUrl(),
+                payment.getStatus());
+        return ResponseEntity.ok(paymentStatusResponse);
     }
 }

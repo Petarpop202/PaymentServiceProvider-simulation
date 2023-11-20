@@ -19,4 +19,5 @@ public class PspPaymentRequest {
     private URL successUrl;
     private URL failedUrl;
     private URL errorUrl;
+    private Long paymentId;
 }

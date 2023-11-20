@@ -19,4 +19,5 @@ public class CardPaymentRequest {
     private URL successUrl;
     private URL failedUrl;
     private URL errorUrl;
+    private Long paymentId;
 }
