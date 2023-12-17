@@ -1,9 +1,16 @@
-import React, { useState, ChangeEvent, useRef, useEffect } from "react";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { FaBitcoin, FaCreditCard, FaPaypal } from "react-icons/fa";
 import { MdQrCodeScanner } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
-import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
-import { checkPaymentStatus, createOrderBE, executePayment, requestCardPayment } from "../../app/agent/agent";
+import { toast } from "react-toastify";
+import {
+  checkPaymentStatus,
+  createCryptoPayment,
+  createOrderBE,
+  executePayment,
+  requestCardPayment,
+} from "../../app/agent/agent";
 import "./Payments.css";
 
 export default function Payments() {
@@ -24,17 +31,18 @@ export default function Payments() {
           paymentId: id as string,
         };
         await requestCardPayment(order)
-        .then((res) => {
-          window.location.href = res.data.paymentUrl;
-        })
-        .catch((err) =>{
-          console.log(err);
-        })
+          .then((res) => {
+            window.location.href = res.data.paymentUrl;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         return;
       case "ips":
         break;
       case "crypto":
-        break;
+        executeCryptoPayment();
+        return;
       case "payPal":
         break;
       default:
@@ -67,29 +75,42 @@ export default function Payments() {
       });
   };
 
+  const executeCryptoPayment = () => {
+    const paymentData = {
+      paymentId: id as string,
+    };
+    createCryptoPayment(paymentData)
+      .then((res) => {
+        window.location.href = res.data.payment_url;
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
+
   useEffect(() => {
-    console.log('UseEffect triggered');
+    console.log("UseEffect triggered");
     const checkStatus = async () => {
-      console.log('Check status');
+      console.log("Check status");
       if (loading) {
         const order = {
           paymentId: id as string,
         };
         await checkPaymentStatus(order)
           .then((res) => {
-            if (res.data.status === 'SUCCESS') {
+            if (res.data.status === "SUCCESS") {
               window.location.href = res.data.successUrl;
-            } else if(res.data.status === 'ERROR'){
+            } else if (res.data.status === "ERROR") {
               window.location.href = res.data.errorUrl;
-            }else if(res.data.status === 'FAILED'){
+            } else if (res.data.status === "FAILED") {
               window.location.href = res.data.failedUrl;
-            }else {
+            } else {
               setLoading(false);
             }
           })
           .catch((err) => {
             console.log(err);
-            setLoading(false); 
+            setLoading(false);
           });
       }
     };
@@ -202,32 +223,32 @@ export default function Payments() {
           </div>
 
           {selectedOption === "payPal" && (
-          <PayPalScriptProvider
-            options={{
-              clientId:
-                "ATcRmO0vakND1PSs7S9UHyplUXzY0DJySmkzNhKgIijUx_HGtzYogtDgduU7YgfNDlz_VffqRrCMwDe8",
-            }}
-          >
-            <div className="col-7">
-              <PayPalButtons
-                fundingSource="paypal"
-                createOrder={onCreate}
-                onApprove={onApprove}
-                style={{ color: "white", shape: "rect", tagline: false}}
-              />
-            </div>
-          </PayPalScriptProvider>
-        )}
+            <PayPalScriptProvider
+              options={{
+                clientId:
+                  "ATcRmO0vakND1PSs7S9UHyplUXzY0DJySmkzNhKgIijUx_HGtzYogtDgduU7YgfNDlz_VffqRrCMwDe8",
+              }}
+            >
+              <div className="col-7">
+                <PayPalButtons
+                  fundingSource="paypal"
+                  createOrder={onCreate}
+                  onApprove={onApprove}
+                  style={{ color: "white", shape: "rect", tagline: false }}
+                />
+              </div>
+            </PayPalScriptProvider>
+          )}
 
           <button
             className="btn d-flex mx-auto"
             onClick={handleBuyNowClick}
-            style={{ 
-              display: selectedOption === "payPal" ? "none" : "block" ,
+            style={{
+              display: selectedOption === "payPal" ? "none" : "block",
               backgroundColor: "#ffffff",
               border: "2px solid #a1aaa5",
               color: "#333333",
-              fontSize: "1.1rem"
+              fontSize: "1.1rem",
             }}
           >
             <b>Buy now</b>
