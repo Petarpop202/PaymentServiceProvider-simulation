@@ -3,7 +3,7 @@ package org.example.model;
 import lombok.*;
 import org.example.model.enums.PaymentStatus;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity

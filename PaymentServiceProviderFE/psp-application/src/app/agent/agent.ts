@@ -25,3 +25,7 @@ export const submitCardPayment = async (data: CardPaymentModel) => {
 export const checkPaymentStatus =async (order: {paymentId: string}) => {
   return await axios.post(`${ACQUIRER_URL}/payment-status`, order);
 }
+
+export const ipsCodeGenerate = async (order: {paymentId: string}) => {
+  return await axios.post(`${ACQUIRER_URL}/qr-code-generator`, order)
+}
