@@ -3,16 +3,14 @@ package org.example.controller;
 import org.example.dto.*;
 import org.example.exception.NotFoundException;
 import org.example.model.Payment;
-import org.example.model.enums.PaymentStatus;
 import org.example.repository.IPaymentRepository;
 import org.example.service.AcquirerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.service.QrCodeService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import java.net.MalformedURLException;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/api/aquirer")
@@ -21,9 +19,11 @@ public class PaymentController {
 
     private final AcquirerService acquirerService;
 
+    private final QrCodeService qrCodeService;
+
     private final IPaymentRepository paymentRepository;
 
-    public PaymentController(AcquirerService acquirerService, IPaymentRepository paymentRepository){this.acquirerService = acquirerService;this.paymentRepository = paymentRepository;}
+    public PaymentController(AcquirerService acquirerService, IPaymentRepository paymentRepository, QrCodeService qrCodeService){this.acquirerService = acquirerService;this.paymentRepository = paymentRepository;this.qrCodeService = qrCodeService;}
 
     @PostMapping(
             value = "/psp-payment-response",
@@ -40,11 +40,10 @@ public class PaymentController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> cardPayment(@RequestBody CardPaymentRequest cardPaymentRequestDto) throws MalformedURLException {
+    public ResponseEntity<?> cardPayment(@RequestBody CardPaymentRequest cardPaymentRequestDto) {
         CardPaymentResponse cardPaymentResponseDto = acquirerService.cardPayment(cardPaymentRequestDto);
         return ResponseEntity.ok(cardPaymentResponseDto);
     }
-
 
     @PostMapping (value = "/payment-status")
     public ResponseEntity<?> getPaymentStatus(@RequestBody IdCardRequest paymentId){
@@ -57,5 +56,16 @@ public class PaymentController {
                 payment.getFailedUrl(),
                 payment.getStatus());
         return ResponseEntity.ok(paymentStatusResponse);
+    }
+
+    @PostMapping (
+            value = "/qr-code-generator",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> generateQrCode(@RequestBody QrCodePaymentRequest qrCodeGenerator){
+        byte[] qrCode = qrCodeService.generateQrCode(qrCodeGenerator);
+        String qrCodeEncoded = Base64.getEncoder().encodeToString(qrCode);
+
+        return ResponseEntity.ok(qrCodeEncoded);
     }
 }

@@ -6,6 +6,7 @@ import CreditCardForm from '../../feature/credit-card-form/CreditCardForm';
 import SuccessPayment from '../../feature/bank-response-urls/SuccessPayment';
 import ErrorPayment from '../../feature/bank-response-urls/ErrorPayment';
 import FailedPayment from '../../feature/bank-response-urls/FailedPayment';
+import IpsCodePayment from '../../feature/ips-payment/IpsCodePayment';
 
 const Router: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const Router: React.FC = () => {
       <Route path="/success-payment" element={<SuccessPayment/>} />
       <Route path="/error-payment" element={<ErrorPayment/>} />
       <Route path="/failed-payment" element={<FailedPayment/>} />
+      <Route path="/payment/ips-payment/:id" element={<IpsCodePayment/>} />
     </Routes>
   );
 };

@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QrCodeGenerator {
+public class QrCodePaymentRequest {
     Long paymentId;
 }
