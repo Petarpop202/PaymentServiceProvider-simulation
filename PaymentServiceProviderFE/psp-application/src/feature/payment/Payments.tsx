@@ -39,6 +39,16 @@ export default function Payments() {
           });
         return;
       case "ips":
+        const order1 = {
+          paymentId: id as string,
+        };
+        await requestCardPayment(order1)
+        .then((res) => {
+          navigate("/payment/ips-payment/"+id);
+        })
+        .catch((err) =>{
+          console.log(err);
+        })
         break;
       case "crypto":
         executeCryptoPayment();

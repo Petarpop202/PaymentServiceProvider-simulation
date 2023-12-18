@@ -1,4 +1,4 @@
-insert into bank_accounts(account_number, balance) values ('xxxxxxxxxxxxxxxxxxxxxxxxxx', 12345), ('yyyyyyyyyyyyyyyyyyyyyyyyyy', 12445 );
+insert into bank_accounts(account_number, balance) values ('845000000040484987', 12345), ('845000000050584987', 12445 );
 
 insert into agencies(merchant_id, merchant_password, bank_account_id) values ('merchant_id-1699895821153', '$2a$12$IJGAeaOD9OloL73IYj6fE.u9n1RmkCMP4EvT.U0DydU3RJ/tWmsaO', 1);
 

@@ -91,6 +91,7 @@ public class PaymentController {
         return restTemplate.postForEntity("http://localhost:9004/api/pay-pal/execute-payment?token=" + token, null, String.class);
     }
 
+
     @PostMapping(value = "/crypto-payment")
     public ResponseEntity<Invoice> createCryptoPayment(@RequestBody PayPalRequest payPalRequest) {
         float paymentAmount = paymentService.getPaymentAmount(payPalRequest.getPaymentId());

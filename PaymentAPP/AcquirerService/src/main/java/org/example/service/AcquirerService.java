@@ -29,8 +29,6 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class AcquirerService {
 
-    private final IBankAccountRepository bankAccountRepository;
-
     private final IPaymentRepository paymentRepository;
 
     private final InBankPaymentService inBankPaymentService;
