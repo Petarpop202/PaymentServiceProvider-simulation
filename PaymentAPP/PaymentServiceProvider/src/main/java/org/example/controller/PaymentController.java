@@ -8,6 +8,8 @@ import org.example.repository.IPaymentRepository;
 import org.example.service.CardPaymentService;
 import org.example.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,4 +91,17 @@ public class PaymentController {
         return restTemplate.postForEntity("http://localhost:9004/api/pay-pal/execute-payment?token=" + token, null, String.class);
     }
 
+
+    @PostMapping(value = "/crypto-payment")
+    public ResponseEntity<Invoice> createCryptoPayment(@RequestBody PayPalRequest payPalRequest) {
+        float paymentAmount = paymentService.getPaymentAmount(payPalRequest.getPaymentId());
+        CryptoPaymentData cryptoPaymentData = new CryptoPaymentData(paymentAmount, "USD", "USD", "Title from payment", "http://localhost:4000/success-payment", "http://localhost:9003/api/payment/callback");
+        return restTemplate.postForEntity("http://localhost:9001/coin-gate/create-payment", cryptoPaymentData, Invoice.class);
+    }
+
+    @PostMapping(value = "/callback")
+    public ResponseEntity<?> tryCallback(@RequestBody InvoiceCallbackData invoiceCallbackData) {
+        System.out.println("Pogodio sam callback");
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
