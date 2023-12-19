@@ -21,6 +21,7 @@
         <module>IssuerService</module>
         <module>PayPal</module>
         <module>CryptoService</module>
+        <module>EurekaGateway</module>
     </modules>
 
     <properties>
