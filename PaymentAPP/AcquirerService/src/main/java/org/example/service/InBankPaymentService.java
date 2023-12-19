@@ -87,4 +87,16 @@ public class InBankPaymentService {
             throw new BadRequestException("Card is expired!");
     }
 
+    public void doIpsPayment(Payment payment) {
+        Agency agency = agencyRepository.findAgencyByMerchantId(payment.getMerchantId())
+                .orElseThrow(() -> new NotFoundException("No seller account exist!"));
+        BankAccount bankAccount = bankAccountRepository.findBankAccountByAccountNumber("845000000050584987")
+                .orElseThrow(() -> new NotFoundException("No buyers account exist!"));
+
+        if(payment.getAmount() > bankAccount.getBalance())
+            transactionDetailsService.failedPayment(payment, "Not enough money!");
+        payment.setIssuerCardNumber(bankAccount.getAccountNumber());
+        transferMoney(bankAccount,agency.getBankAccount(),payment);
+        transactionDetailsService.successPayment(payment);
+    }
 }

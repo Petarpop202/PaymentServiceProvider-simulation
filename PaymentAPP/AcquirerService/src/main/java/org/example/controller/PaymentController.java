@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
 @RestController
@@ -31,7 +33,6 @@ public class PaymentController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> pspPaymentResponse(@RequestBody PspPaymentRequest cardPaymentRequestDto) throws Exception {
-        // todo: Da li da pravimo karticu odvojenu od bankovnog racuna ?
         return ResponseEntity.ok(acquirerService.createPspPaymentResponse(cardPaymentRequestDto));
     }
 
@@ -62,10 +63,19 @@ public class PaymentController {
             value = "/qr-code-generator",
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> generateQrCode(@RequestBody QrCodePaymentRequest qrCodeGenerator){
+    public ResponseEntity<?> generateQrCode(@RequestBody QrCodePaymentRequest qrCodeGenerator) {
         byte[] qrCode = qrCodeService.generateQrCode(qrCodeGenerator);
         String qrCodeEncoded = Base64.getEncoder().encodeToString(qrCode);
 
         return ResponseEntity.ok(qrCodeEncoded);
+    }
+
+    @PostMapping (
+            value = "/qr-code-validator",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> validateQrCode(@RequestBody IpsPaymentRequest ipsPaymentRequest) {
+        CardPaymentResponse cardPaymentResponse = acquirerService.ipsPayment(ipsPaymentRequest);
+        return ResponseEntity.ok(cardPaymentResponse);
     }
 }

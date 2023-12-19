@@ -139,4 +139,14 @@ public class AcquirerService {
             long issuerOrderId = new Random().nextLong(1000000000L, 10000000000L);
             return String.valueOf(issuerOrderId);
     }
+
+    public CardPaymentResponse ipsPayment(IpsPaymentRequest ipsPaymentRequest) {
+        Payment payment = paymentRepository.findById(ipsPaymentRequest.getPaymentId())
+                .orElseThrow(() -> new NotFoundException("Payment doesn't exist!"));
+
+        validatePayment(payment);
+        inBankPaymentService.doIpsPayment(payment);
+
+        return new CardPaymentResponse(payment.getSuccessUrl().toString());
+    }
 }

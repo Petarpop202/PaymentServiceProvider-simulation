@@ -20,10 +20,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Base64;
-import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +52,10 @@ public class QrCodeService {
     private RestTemplate restTemplate;
 
     private static final String QR_CODE_GEN_URL = "https://nbs.rs/QRcode/api/qr/v1/gen/500";
+
+    private static final String QR_CODE_VAL_URL = "https://nbs.rs/QRcode/api/qr/v1/validate";
+
+    private Logger logger = LoggerFactory.getLogger(QrCodeService.class);
 
     public byte[] generateQrCode(QrCodePaymentRequest qrCodePaymentRequest) {
         Payment payment = paymentRepository.findById(qrCodePaymentRequest.getPaymentId()).orElseThrow(null);
@@ -67,7 +84,9 @@ public class QrCodeService {
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
         qrCodeGeneratorRequest.setI("RSD" + decimalFormat.format(payment.getAmount()));
 
-        qrCodeGeneratorRequest.setN("Bogdan Diklic");
+        qrCodeGeneratorRequest.setN("Agencija");
         return qrCodeGeneratorRequest;
     }
+
+
 }

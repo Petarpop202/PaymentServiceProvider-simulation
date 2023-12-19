@@ -28,7 +28,10 @@ export const createCryptoPayment = (order: { paymentId: string }) => {
   return axios.post(`${PSP_URL}/crypto-payment`, order);
 };
 
-
 export const ipsCodeGenerate = async (order: {paymentId: string}) => {
   return await axios.post(`${ACQUIRER_URL}/qr-code-generator`, order)
+};
+
+export const ipsCodeValidate = async (order: {paymentId: string}) => {
+  return await axios.post(`${ACQUIRER_URL}/qr-code-validator`, order)
 }
