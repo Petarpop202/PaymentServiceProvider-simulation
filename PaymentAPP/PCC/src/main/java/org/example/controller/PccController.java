@@ -28,6 +28,6 @@ public class PccController {
     @PostMapping(value = "/different-bank")
     public ResponseEntity<SuccessfulPaymentData> differentIssuerBank(@RequestBody CardPaymentRequestIssuer cardPaymentRequestIssuer) {
         pccService.checkRequestValidity(cardPaymentRequestIssuer);
-        return restTemplate.postForEntity("http://localhost:9002/api/issuer/card-payment", cardPaymentRequestIssuer, SuccessfulPaymentData.class);
+        return restTemplate.postForEntity("http://issuer-service/api/issuer/card-payment", cardPaymentRequestIssuer, SuccessfulPaymentData.class);
     }
 }

@@ -1,15 +1,13 @@
-package com.example.eurekagateway;
+package org.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
-@EnableEurekaServer
 @SpringBootApplication
-public class EurekaGatewayApplication {
-
+@EnableEurekaServer
+public class DiscoveryServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(EurekaGatewayApplication.class, args);
+        SpringApplication.run(DiscoveryServiceApplication.class, args);
     }
-
 }
