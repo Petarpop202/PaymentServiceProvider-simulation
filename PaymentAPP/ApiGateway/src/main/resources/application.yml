@@ -1,0 +1,41 @@
+server:
+  port: 9010
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:'[/**]':
+          allowedOrigins: "*"
+          allowedMethods: "*"
+          allowedHeaders: "*"
+      routes:
+        - id: acquirer-service
+          predicates:
+            - Path=/api/aquirer/**
+          uri: lb://acquirer-service
+        - id: crypto-service
+          predicates:
+            - Path=/coin-gate/**
+          uri: lb://crypto-service
+        - id: issuer-service
+          predicates:
+            - Path=/api/issuer/**
+          uri: lb://issuer-service
+        - id: paypal-service
+          predicates:
+            - Path=/api/pay-pal/**
+          uri: lb://paypal-service
+        - id: pcc-service
+          predicates:
+            - Path=/api/pcc/**
+          uri: lb://pcc-service
