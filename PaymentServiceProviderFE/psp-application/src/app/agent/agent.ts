@@ -1,7 +1,7 @@
 import axios from "axios";
 import { CardPaymentModel } from "../model/CardPaymentModel";
 
-const ACQUIRER_URL = "http://localhost:9000/api/aquirer";
+const ACQUIRER_URL = "http://localhost:9010/api/aquirer";
 const PSP_URL = "http://localhost:9003/api/payment";
 
 export const createOrderBE = (order: { paymentId: string }) => {
