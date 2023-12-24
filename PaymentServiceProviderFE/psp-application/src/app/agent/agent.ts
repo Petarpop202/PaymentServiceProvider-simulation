@@ -4,6 +4,11 @@ import { CardPaymentModel } from "../model/CardPaymentModel";
 const ACQUIRER_URL = "http://localhost:9010/api/aquirer";
 const PSP_URL = "http://localhost:9003/api/payment";
 
+type PaymentMethod = {
+  id: number;
+  name: string;
+};
+
 export const createOrderBE = (order: { paymentId: string }) => {
   return axios.post(`${PSP_URL}/pay-pal-create`, order);
 };
@@ -34,4 +39,16 @@ export const ipsCodeGenerate = async (order: {paymentId: string}) => {
 
 export const ipsCodeValidate = async (order: {paymentId: string}) => {
   return await axios.post(`${ACQUIRER_URL}/qr-code-validator`, order)
+}
+
+export const sendOrdersToBackend = async (order: {options: PaymentMethod[]}) => {
+  return await axios.post(`${PSP_URL}/crypto-payment`, order);
+}
+
+export const fetchPaymentMethods = async () => {
+  return axios.post(`${PSP_URL}/crypto-payment`);
+}
+
+export const getActivePaymentMethods = async () => {
+  return axios.post(`${PSP_URL}/crypto-payment`);
 }

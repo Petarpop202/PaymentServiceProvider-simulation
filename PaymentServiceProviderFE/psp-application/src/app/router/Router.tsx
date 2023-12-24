@@ -7,6 +7,7 @@ import SuccessPayment from '../../feature/bank-response-urls/SuccessPayment';
 import ErrorPayment from '../../feature/bank-response-urls/ErrorPayment';
 import FailedPayment from '../../feature/bank-response-urls/FailedPayment';
 import IpsCodePayment from '../../feature/ips-payment/IpsCodePayment';
+import PaymentSubscription from '../../feature/payment-subscription/PaymentSubscription';
 
 const Router: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const Router: React.FC = () => {
       <Route path="/error-payment" element={<ErrorPayment/>} />
       <Route path="/failed-payment" element={<FailedPayment/>} />
       <Route path="/payment/ips-payment/:id" element={<IpsCodePayment/>} />
+      <Route path="/payment-subscription" element={<PaymentSubscription/>} />
     </Routes>
   );
 };
