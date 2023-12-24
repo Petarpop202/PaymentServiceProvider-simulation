@@ -9,13 +9,21 @@ import {
   createCryptoPayment,
   createOrderBE,
   executePayment,
+  getActivePaymentMethods,
   requestCardPayment,
 } from "../../app/agent/agent";
 import "./Payments.css";
 
+type PaymentMethod = {
+  id: number;
+  name: string;
+};
+
+
 export default function Payments() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const { id } = useParams();
+  const [activePaymentMethods, setActivePaymentMethods] = useState<PaymentMethod[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -26,7 +34,7 @@ export default function Payments() {
   const handleBuyNowClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     switch (selectedOption) {
-      case "creditCard":
+      case "CREDIT CARD":
         const order = {
           paymentId: id as string,
         };
@@ -38,7 +46,7 @@ export default function Payments() {
             console.log(err);
           });
         return;
-      case "ips":
+      case "QR CODE":
         const order1 = {
           paymentId: id as string,
         };
@@ -50,10 +58,10 @@ export default function Payments() {
           console.log(err);
         })
         break;
-      case "crypto":
+      case "CRYPTO":
         executeCryptoPayment();
         return;
-      case "payPal":
+      case "PAYPAL":
         break;
       default:
         break;
@@ -99,7 +107,16 @@ export default function Payments() {
   };
 
   useEffect(() => {
-    console.log("UseEffect triggered");
+    const getActivePaymentMethodsFun = async () => {
+        await getActivePaymentMethods()
+        .then((res) => {
+          setActivePaymentMethods(res.data)
+        })
+        .catch((err) => {
+
+        }); 
+    };
+
     const checkStatus = async () => {
       console.log("Check status");
       if (loading) {
@@ -126,113 +143,44 @@ export default function Payments() {
     };
 
     checkStatus();
+    getActivePaymentMethodsFun();
   }, [loading, id]);
 
   return (
     <body className="body">
       <div className="card mt-50 mb-50">
         <div className="card-title mx-auto">Choose payment method</div>
-        <div className="nav">
-          <ul className="ul">
-            <li className="active">
-              <a href="#">Payment</a>
-            </li>
-          </ul>
-        </div>
+        <div className="nav"></div>
         <form>
-          <div
-            className={`row row-1 ${
-              selectedOption === "creditCard" ? "selected" : ""
-            }`}
-            onClick={() => setSelectedOption("creditCard")}
-          >
-            <label htmlFor="creditCard" className="col-2">
-              <FaCreditCard size={35} />
-              <span className="ml-50">Credit card</span>
-            </label>
-            <div className="col-7">
-              <input
-                type="radio"
-                id="creditCard"
-                name="paymentOption"
-                value="creditCard"
-                onChange={handleOptionChange}
-                checked={selectedOption === "creditCard"}
-                style={{ display: "none" }}
-              />
+          {activePaymentMethods.map((paymentMethod) => (
+            <div
+              key={paymentMethod.name}
+              className={`row row-1 ${
+                selectedOption === paymentMethod.name ? "selected" : ""
+              }`}
+              onClick={() => setSelectedOption(paymentMethod.name)}
+            >
+              <label htmlFor={paymentMethod.name} className="col-2">
+                {paymentMethod.name === "CREDIT CARD" && <FaCreditCard size={35} />}
+                {paymentMethod.name === "QR CODE" && <MdQrCodeScanner size={35} />}
+                {paymentMethod.name === "PAY PAL" && <FaPaypal size={35} />}
+                {paymentMethod.name === "CRYPTO" && <FaBitcoin size={35} />}
+                <span className="ml-50">{paymentMethod.name}</span>
+              </label>
+              <div className="col-7">
+                <input
+                  type="radio"
+                  id={paymentMethod.id.toString()}
+                  name="paymentOption"
+                  value={paymentMethod.name}
+                  onChange={handleOptionChange}
+                  checked={selectedOption === paymentMethod.name}
+                  style={{ display: "none" }}
+                />
+              </div>
             </div>
-          </div>
-
-          <div
-            className={`row row-1 ${
-              selectedOption === "ips" ? "selected" : ""
-            }`}
-            onClick={() => setSelectedOption("ips")}
-          >
-            <label htmlFor="ips" className="col-2">
-              <MdQrCodeScanner size={35} />
-              <span className="ml-50">IPS</span>
-            </label>
-            <div className="col-7">
-              <input
-                type="radio"
-                id="ips"
-                name="paymentOption"
-                value="ips"
-                onChange={handleOptionChange}
-                checked={selectedOption === "ips"}
-                style={{ display: "none" }}
-              />
-            </div>
-          </div>
-
-          <div
-            className={`row row-1 ${
-              selectedOption === "payPal" ? "selected" : ""
-            }`}
-            onClick={() => setSelectedOption("payPal")}
-          >
-            <label htmlFor="payPal" className="col-2">
-              <FaPaypal size={35} />
-              <span className="ml-50">Pay-Pal</span>
-            </label>
-            <div className="col-7">
-              <input
-                type="radio"
-                id="payPal"
-                name="paymentOption"
-                value="payPal"
-                onChange={handleOptionChange}
-                checked={selectedOption === "payPal"}
-                style={{ display: "none" }}
-              />
-            </div>
-          </div>
-
-          <div
-            className={`row row-1 ${
-              selectedOption === "crypto" ? "selected" : ""
-            }`}
-            onClick={() => setSelectedOption("crypto")}
-          >
-            <label htmlFor="crypto" className="col-2">
-              <FaBitcoin size={35} />
-              <span className="ml-50">Crypto</span>
-            </label>
-            <div className="col-7">
-              <input
-                type="radio"
-                id="crypto"
-                name="paymentOption"
-                value="crypto"
-                onChange={handleOptionChange}
-                checked={selectedOption === "crypto"}
-                style={{ display: "none" }}
-              />
-            </div>
-          </div>
-
-          {selectedOption === "payPal" && (
+          ))}
+          {selectedOption === "PAY PAL" && (
             <PayPalScriptProvider
               options={{
                 clientId:

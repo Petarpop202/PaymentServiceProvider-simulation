@@ -40,18 +40,11 @@ public class TransactionDetailsService {
         details.setPaymentId(payment.getId());
         details.setPaymentStatus(payment.getStatus());
 
-        final String uri = "http://localhost:9003/api/payment/acquirer-bank-response";
-        ResponseEntity<TransactionDetails> responseEntity = restTemplate.postForEntity(
-                uri,
-                details,
-                TransactionDetails.class );
-        // todo: Provera da li je psp dobio poruku u suprotnom prekinuti transakciju
-        /*
-        TransactionDetails responseDto = responseEntity.getBody();
-
-        if(responseDto == null)
-            throw new NotFoundException(message);
-        */
+//        final String uri = "http://localhost:9003/api/payment/acquirer-bank-response";
+//        ResponseEntity<TransactionDetails> responseEntity = restTemplate.postForEntity(
+//                uri,
+//                details,
+//                TransactionDetails.class );
     }
 
     public void errorPayment(Payment payment, String message) {

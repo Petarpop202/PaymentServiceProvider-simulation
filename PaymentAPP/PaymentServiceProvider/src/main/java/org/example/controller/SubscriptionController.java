@@ -18,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/subscription")
+@CrossOrigin
 public class SubscriptionController {
 
     @Autowired
