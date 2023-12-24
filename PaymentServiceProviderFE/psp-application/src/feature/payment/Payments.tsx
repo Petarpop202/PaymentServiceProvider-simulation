@@ -34,7 +34,7 @@ export default function Payments() {
   const handleBuyNowClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     switch (selectedOption) {
-      case "creditCard":
+      case "CREDIT CARD":
         const order = {
           paymentId: id as string,
         };
@@ -46,7 +46,7 @@ export default function Payments() {
             console.log(err);
           });
         return;
-      case "ips":
+      case "QR CODE":
         const order1 = {
           paymentId: id as string,
         };
@@ -58,10 +58,10 @@ export default function Payments() {
           console.log(err);
         })
         break;
-      case "crypto":
+      case "CRYPTO":
         executeCryptoPayment();
         return;
-      case "payPal":
+      case "PAYPAL":
         break;
       default:
         break;
@@ -161,10 +161,10 @@ export default function Payments() {
               onClick={() => setSelectedOption(paymentMethod.name)}
             >
               <label htmlFor={paymentMethod.name} className="col-2">
-                {paymentMethod.name === "creditCard" && <FaCreditCard size={35} />}
-                {paymentMethod.name === "ips" && <MdQrCodeScanner size={35} />}
-                {paymentMethod.name === "payPal" && <FaPaypal size={35} />}
-                {paymentMethod.name === "crypto" && <FaBitcoin size={35} />}
+                {paymentMethod.name === "CREDIT CARD" && <FaCreditCard size={35} />}
+                {paymentMethod.name === "QR CODE" && <MdQrCodeScanner size={35} />}
+                {paymentMethod.name === "PAY PAL" && <FaPaypal size={35} />}
+                {paymentMethod.name === "CRYPTO" && <FaBitcoin size={35} />}
                 <span className="ml-50">{paymentMethod.name}</span>
               </label>
               <div className="col-7">
@@ -180,7 +180,7 @@ export default function Payments() {
               </div>
             </div>
           ))}
-          {selectedOption === "payPal" && (
+          {selectedOption === "PAY PAL" && (
             <PayPalScriptProvider
               options={{
                 clientId:

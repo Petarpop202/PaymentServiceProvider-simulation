@@ -12,39 +12,45 @@ type PaymentMethod = {
 };
 
 type SelectedOptions = {
-  creditCard: PaymentMethod | null;
-  ips: PaymentMethod | null;
-  payPal: PaymentMethod | null;
-  crypto: PaymentMethod | null;
+  CREDIT_CARD: PaymentMethod | null;
+  QR_CODE: PaymentMethod | null;
+  PAY_PAL: PaymentMethod | null;
+  CRYPTO: PaymentMethod | null;
 };
 
 export default function PaymentSubscription() {
   const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>({
-    creditCard: null,
-    ips: null,
-    payPal: null,
-    crypto: null,
+    CREDIT_CARD: null,
+    QR_CODE: null,
+    PAY_PAL: null,
+    CRYPTO: null,
   });
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const getMethods = async () => {
-    await fetchPaymentMethods()
-    .then((res) => {
-      const paymentMethods: PaymentMethod[] = res.data;
-        setSelectedOptions((prevSelected) => ({
-          ...prevSelected,
-          creditCard: paymentMethods[0],
-          ips: paymentMethods[2],
-          payPal: paymentMethods[1],
-          crypto: paymentMethods[3],
-        }));
-    })
-    .catch((err) => {
+      await fetchPaymentMethods()
+        .then((res) => {
+          const paymentMethods: PaymentMethod[] = res.data;
 
-    })
-  }
+          setSelectedOptions({
+            CREDIT_CARD: null,
+            QR_CODE: null,
+            PAY_PAL: null,
+            CRYPTO: null,
+          });
+
+          setSelectedOptions((prevSelected) => ({
+            ...prevSelected,
+            CREDIT_CARD: paymentMethods[0],
+            QR_CODE: paymentMethods[1],
+            PAY_PAL: paymentMethods[2],
+            CRYPTO: paymentMethods[3],
+          }));
+        })
+        .catch((err) => {});
+    };
 
     getMethods();
   }, []);
@@ -52,7 +58,7 @@ export default function PaymentSubscription() {
   const handleOptionChange = (option: keyof SelectedOptions, paymentMethod: PaymentMethod | null) => {
     setSelectedOptions((prevSelected) => ({
       ...prevSelected,
-      [option]: paymentMethod,
+      [option]: prevSelected[option] === paymentMethod ? null : paymentMethod,
     }));
   };
 
@@ -64,15 +70,13 @@ export default function PaymentSubscription() {
       .map(([_, paymentMethod]) => paymentMethod as PaymentMethod);
 
     // TODO: Izmeniti bekend
-      await sendOrdersToBackend({
-        options: selectedOptionsArray,
-      })
+    await sendOrdersToBackend({
+      methodsForSubscription: selectedOptionsArray,
+    })
       .then((res) => {
-
+        window.location.href = "http://localhost:3000"
       })
-      .catch((err) => {
-
-      });
+      .catch((err) => {});
   };
 
   return (
@@ -81,8 +85,8 @@ export default function PaymentSubscription() {
         <div className="card-title mx-auto">Choose payment method</div>
         <form>
           <div
-            className={`row row-1 ${selectedOptions.creditCard ? 'selected' : ''}`}
-            onClick={() => handleOptionChange('creditCard', selectedOptions.creditCard)}
+            className={`row row-1 ${selectedOptions.CREDIT_CARD !== null ? 'selected' : ''}`}
+            onClick={() => handleOptionChange('CREDIT_CARD', selectedOptions.CREDIT_CARD)}
           >
             <label htmlFor="creditCard" className="col-2">
               <FaCreditCard size={35} />
@@ -91,74 +95,74 @@ export default function PaymentSubscription() {
             <div className="col-7">
               <input
                 type="radio"
-                id="creditCard"
+                id="CREDIT_CARD"
                 name="paymentOption"
-                value="creditCard"
+                value="CREDIT_CARD"
                 onChange={() => {}}
-                checked={selectedOptions.creditCard !== null}
+                checked={selectedOptions.CREDIT_CARD !== null}
                 style={{ display: 'none' }}
               />
             </div>
           </div>
 
           <div
-            className={`row row-1 ${selectedOptions.ips ? 'selected' : ''}`}
-            onClick={() => handleOptionChange('ips', selectedOptions.ips)}
+            className={`row row-1 ${selectedOptions.QR_CODE !== null ? 'selected' : ''}`}
+            onClick={() => handleOptionChange('QR_CODE', selectedOptions.QR_CODE)}
           >
-            <label htmlFor="ips" className="col-2">
+            <label htmlFor="QR_CODE" className="col-2">
               <MdQrCodeScanner size={35} />
               <span className="ml-50">IPS</span>
             </label>
             <div className="col-7">
               <input
                 type="radio"
-                id="ips"
+                id="QR_CODE"
                 name="paymentOption"
-                value="ips"
+                value="QR_CODE"
                 onChange={() => {}}
-                checked={selectedOptions.ips !== null}
+                checked={selectedOptions.QR_CODE !== null}
                 style={{ display: 'none' }}
               />
             </div>
           </div>
 
           <div
-            className={`row row-1 ${selectedOptions.payPal ? 'selected' : ''}`}
-            onClick={() => handleOptionChange('payPal', selectedOptions.payPal)}
+            className={`row row-1 ${selectedOptions.PAY_PAL !== null ? 'selected' : ''}`}
+            onClick={() => handleOptionChange('PAY_PAL', selectedOptions.PAY_PAL)}
           >
-            <label htmlFor="payPal" className="col-2">
+            <label htmlFor="PAY_PAL" className="col-2">
               <FaPaypal size={35} />
               <span className="ml-50">Pay-Pal</span>
             </label>
             <div className="col-7">
               <input
                 type="radio"
-                id="payPal"
+                id="PAY_PAL"
                 name="paymentOption"
-                value="payPal"
+                value="PAY_PAL"
                 onChange={() => {}}
-                checked={selectedOptions.payPal !== null}
+                checked={selectedOptions.PAY_PAL !== null}
                 style={{ display: 'none' }}
               />
             </div>
           </div>
 
           <div
-            className={`row row-1 ${selectedOptions.crypto ? 'selected' : ''}`}
-            onClick={() => handleOptionChange('crypto', selectedOptions.crypto)}
+            className={`row row-1 ${selectedOptions.CRYPTO !== null ? 'selected' : ''}`}
+            onClick={() => handleOptionChange('CRYPTO', selectedOptions.CRYPTO)}
           >
-            <label htmlFor="crypto" className="col-2">
+            <label htmlFor="CRYPTO" className="col-2">
               <FaBitcoin size={35} />
               <span className="ml-50">Crypto</span>
             </label>
             <div className="col-7">
               <input
                 type="radio"
-                id="crypto"
+                id="CRYPTO"
                 name="paymentOption"
-                value="crypto"
+                value="CRYPTO"
                 onChange={() => {}}
-                checked={selectedOptions.crypto !== null}
+                checked={selectedOptions.CRYPTO !== null}
                 style={{ display: 'none' }}
               />
             </div>
