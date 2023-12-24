@@ -12,6 +12,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -49,6 +50,7 @@ public class PaymentController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAuthority('CREDIT CARD')")
     public ResponseEntity<?> cardPaymentRequest(@RequestBody IdCardRequest paymentId) throws Exception {
         Payment payment = paymentRepository.findById(paymentId.getPaymentId())
                 .orElseThrow(()-> new NotFoundException("Not found"));
@@ -71,11 +73,13 @@ public class PaymentController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAuthority('CREDIT CARD')")
     public void acquirerBankResponse(@RequestBody TransactionDetails transactionDetails){
         cardPaymentService.finishPayment(transactionDetails);
     }
 
     @PostMapping(value = "/pay-pal-create")
+    @PreAuthorize("hasAuthority('PAY PAL')")
     public String createPayPalOrder(@RequestBody PayPalRequest payPalRequest) {
         float paymentAmount = paymentService.getPaymentAmount(payPalRequest.getPaymentId());
         PayPalAmount payPalAmount = new PayPalAmount(paymentAmount);
@@ -84,6 +88,7 @@ public class PaymentController {
     }
 
     @PostMapping(value = "/pay-pal-execute")
+    @PreAuthorize("hasAuthority('PAY PAL')")
     public ResponseEntity<?> executePayPalOrder(@RequestParam("token") String token) {
         System.out.println(token);
         Map<String, String> queryParam = new HashMap<>();
@@ -92,6 +97,7 @@ public class PaymentController {
     }
 
     @PostMapping(value = "/crypto-payment")
+    @PreAuthorize("hasAuthority('CRYPTO')")
     public ResponseEntity<Invoice> createCryptoPayment(@RequestBody PayPalRequest payPalRequest) {
         float paymentAmount = paymentService.getPaymentAmount(payPalRequest.getPaymentId());
         CryptoPaymentData cryptoPaymentData = new CryptoPaymentData(paymentAmount, "USD", "USD", "Title from payment", "http://localhost:4000/success-payment", "http://localhost:9003/api/payment/callback");
