@@ -17,6 +17,7 @@ public class Agency {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Getter
     @Column(name = "merchant_id")
     private String merchantId;
 
@@ -28,4 +29,10 @@ public class Agency {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "bank_account_id")
     private BankAccount bankAccount;
+
+    public Agency(String merchantId, String merchantPassword, BankAccount bankAccount) {
+        this.merchantId = merchantId;
+        this.merchantPassword = merchantPassword;
+        this.bankAccount = bankAccount;
+    }
 }

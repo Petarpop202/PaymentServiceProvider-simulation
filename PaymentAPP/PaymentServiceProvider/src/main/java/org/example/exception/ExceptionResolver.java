@@ -23,4 +23,11 @@ public class ExceptionResolver {
         headers.setContentType(MediaType.TEXT_PLAIN);
         return new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> exceptionHandler(Exception exception) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        return new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

@@ -31,6 +31,10 @@ public class Subscription implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "method_id", referencedColumnName = "id"))
     private List<PaymentMethod> subscribedPaymentMethods;
 
+    @ManyToOne
+    @JoinColumn(name = "agency_id")
+    private Agency agency;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return subscribedPaymentMethods;

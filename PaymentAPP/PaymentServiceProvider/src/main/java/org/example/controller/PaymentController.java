@@ -40,6 +40,7 @@ public class PaymentController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyAuthority('CREDIT CARD', 'QR CODE', 'PAY PAL', 'CRYPTO')")
     public ResponseEntity<?> paymentRequest(@RequestBody PaymentRequestFromClient paymentRequestDto) throws Exception {
         CardPaymentResponse responseDto = cardPaymentService.createPayment(paymentRequestDto);
         return ResponseEntity.ok(responseDto);
@@ -50,7 +51,7 @@ public class PaymentController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAuthority('CREDIT CARD')")
+    @PreAuthorize("hasAnyAuthority('CREDIT CARD', 'QR CODE')")
     public ResponseEntity<?> cardPaymentRequest(@RequestBody IdCardRequest paymentId) throws Exception {
         Payment payment = paymentRepository.findById(paymentId.getPaymentId())
                 .orElseThrow(()-> new NotFoundException("Not found"));

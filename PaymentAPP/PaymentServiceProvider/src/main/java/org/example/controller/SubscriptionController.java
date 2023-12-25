@@ -25,7 +25,7 @@ public class SubscriptionController {
     private SubscriptionService subscriptionService;
 
     @PostMapping("/create-subscription")
-    public ResponseEntity<Subscription> createSubscription(@RequestBody SubscriptionDTO subscriptionDTO) throws MessagingException {
+    public ResponseEntity<Subscription> createSubscription(@RequestBody SubscriptionDTO subscriptionDTO) throws Exception {
         Subscription subscription = subscriptionService.createSubscription(subscriptionDTO);
         return new ResponseEntity<>(subscription, HttpStatus.OK);
     }

@@ -1,14 +1,21 @@
 package org.example.service;
 
 import javax.mail.MessagingException;
+
+import org.example.dto.CardPaymentResponse;
 import org.example.dto.SubscriptionDTO;
+import org.example.exception.BadRequestException;
+import org.example.model.Agency;
 import org.example.model.PaymentMethod;
 import org.example.model.Subscription;
+import org.example.repository.IAgencyRepository;
 import org.example.repository.IPaymentMethodRepository;
 import org.example.repository.ISubscriptionRepository;
 import org.example.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,15 +31,31 @@ public class SubscriptionService {
     private IPaymentMethodRepository paymentMethodRepository;
 
     @Autowired
+    private IAgencyRepository agencyRepository;
+
+    @Autowired
     private TokenUtils tokenUtils;
 
     @Autowired
     private EmailService emailService;
 
-    public Subscription createSubscription(SubscriptionDTO subscriptionDTO) throws MessagingException {
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public Subscription createSubscription(SubscriptionDTO subscriptionDTO) throws Exception {
         List<PaymentMethod> paymentMethods = findPaymentMethods(subscriptionDTO.getMethodsForSubscription());
         Subscription subscription = new Subscription();
         subscription.setSubscribedPaymentMethods(paymentMethods);
+        ResponseEntity<Agency> responseEntity = restTemplate.postForEntity(
+                "http://localhost:9010/api/aquirer/subscription/create",
+                null,
+                Agency.class );
+        Agency agency = responseEntity.getBody();
+        if (agency == null) {
+            throw new Exception("Problem while subscribing");
+        }
+        agency = agencyRepository.save(agency);
+        subscription.setAgency(agency);
         subscription = subscriptionRepository.save(subscription);
         String token = tokenUtils.generateToken(subscription.getId());
         emailService.sendTokenMail(token);
