@@ -197,12 +197,11 @@ export default function Payments() {
               </div>
             </PayPalScriptProvider>
           )}
-
           <button
             className="btn d-flex mx-auto"
             onClick={handleBuyNowClick}
             style={{
-              display: selectedOption === "payPal" ? "none" : "block",
+              display: selectedOption === "PAY PAL" ? "none" : "block",
               backgroundColor: "#ffffff",
               border: "2px solid #a1aaa5",
               color: "#333333",
