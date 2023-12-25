@@ -3,6 +3,7 @@ package org.example.model;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.example.dto.Invoice;
 
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class CryptoPayment {
     private String orderId;
 
     @Column(name = "status", nullable = false)
+    @Setter
     private String status;
 
     @Column(name = "price_amount", nullable = false)

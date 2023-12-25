@@ -2,6 +2,7 @@ package org.example.service;
 
 import com.circle.client.model.CreateWalletResponse;
 import org.example.dto.Invoice;
+import org.example.dto.InvoiceCallbackData;
 import org.example.dto.PaymentData;
 import org.example.exceptions.InvoiceCreationException;
 import org.example.model.CryptoPayment;
@@ -53,5 +54,11 @@ public class CoinGateService {
     private void createCryptoPayment(Invoice invoice) {
         CryptoPayment cryptoPayment = new CryptoPayment(invoice);
         cryptoPaymentRepository.save(cryptoPayment);
+    }
+
+    public CryptoPayment changePaymentStatus(InvoiceCallbackData invoiceCallbackData) {
+        CryptoPayment cryptoPayment = cryptoPaymentRepository.findCryptoPaymentByOrderId(invoiceCallbackData.getOrderId());
+        cryptoPayment.setStatus(invoiceCallbackData.getStatus());
+        return cryptoPaymentRepository.save(cryptoPayment);
     }
 }

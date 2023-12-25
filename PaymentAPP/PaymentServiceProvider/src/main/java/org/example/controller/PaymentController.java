@@ -107,7 +107,6 @@ public class PaymentController {
 
     @PostMapping(value = "/callback")
     public ResponseEntity<?> tryCallback(@RequestBody InvoiceCallbackData invoiceCallbackData) {
-        System.out.println("Pogodio sam callback");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return restTemplate.postForEntity("http://localhost:9010/coin-gate/change-status", invoiceCallbackData, Object.class);
     }
 }
