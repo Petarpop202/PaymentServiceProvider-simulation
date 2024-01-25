@@ -5,6 +5,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+import javax.net.ssl.SSLContext;
+
 @SpringBootApplication
 public class PspApplication {
     public static void main(String[] args) {SpringApplication.run(PspApplication.class, args);

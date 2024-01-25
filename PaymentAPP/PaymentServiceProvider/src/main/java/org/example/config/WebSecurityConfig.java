@@ -48,6 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .addFilterBefore(new TokenAuthenticationFilter(tokenUtils, customUserDetailsService), BasicAuthenticationFilter.class);
         http.csrf().disable();
+        http.headers().xssProtection().and().contentSecurityPolicy("script-src 'self'");
     }
 
     @Override

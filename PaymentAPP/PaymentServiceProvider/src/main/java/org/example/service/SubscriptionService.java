@@ -47,7 +47,7 @@ public class SubscriptionService {
         Subscription subscription = new Subscription();
         subscription.setSubscribedPaymentMethods(paymentMethods);
         ResponseEntity<Agency> responseEntity = restTemplate.postForEntity(
-                "http://localhost:9010/api/aquirer/subscription/create",
+                "https://localhost:9010/api/aquirer/subscription/create",
                 null,
                 Agency.class );
         Agency agency = responseEntity.getBody();

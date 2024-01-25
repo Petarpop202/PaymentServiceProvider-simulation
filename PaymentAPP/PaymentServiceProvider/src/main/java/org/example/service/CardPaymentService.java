@@ -24,7 +24,7 @@ public class CardPaymentService {
 
     private final IPaymentRepository paymentRepository;
 
-    private static final String PAYMENT_CHOOSE_URL = "http://localhost:4000/choose-payment/";
+    private static final String PAYMENT_CHOOSE_URL = "https://localhost:4000/choose-payment/";
 
     public CardPaymentRequest createCardPaymentRequest(Payment payment) throws Exception {
         Agency agency = agencyRepository.findById(payment.getMerchantOrderId())
@@ -36,9 +36,9 @@ public class CardPaymentService {
                 payment.getMerchantOrderId(),
                 payment.getAmount(),
                 payment.getTimestamp(),
-                new URL("http://localhost:4000/success-payment"),
-                new URL("http://localhost:4000/failed-payment"),
-                new URL("http://localhost:4000/error-payment"),
+                new URL("https://localhost:4000/success-payment"),
+                new URL("https://localhost:4000/failed-payment"),
+                new URL("https://localhost:4000/error-payment"),
                 payment.getId()
         );
     }

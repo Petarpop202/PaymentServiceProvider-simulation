@@ -17,19 +17,19 @@ public class PingController {
     private RestTemplate restTemplate;
     @GetMapping("/crypto")
     public ResponseEntity<String> pingCryptoService() throws Exception {
-        final String uri = "http://localhost:9001/api/ping";
+        final String uri = "https://localhost:9001/api/ping";
         return pingMethod(uri);
     }
 
     @GetMapping("/payPal")
     public ResponseEntity<String> pingPayPalService() throws Exception {
-        final String uri = "http://localhost:9004/api/ping";
+        final String uri = "https://localhost:9004/api/ping";
         return pingMethod(uri);
     }
 
     @GetMapping("/ips")
     public ResponseEntity<String> pingIPSService() throws Exception {
-        final String uri = "http://localhost:9006/api/ping";
+        final String uri = "https://localhost:9006/api/ping";
         return pingMethod(uri);
     }
 

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
-import './PaymentSubscription.css';
-import { fetchPaymentMethods, sendOrdersToBackend } from '../../app/agent/agent';
-import { FaBitcoin, FaCreditCard, FaPaypal } from 'react-icons/fa';
-import { MdQrCodeScanner } from 'react-icons/md';
+import React, { useEffect, useState } from "react";
+import { FaBitcoin, FaCreditCard, FaPaypal } from "react-icons/fa";
+import { MdQrCodeScanner } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import {
+  fetchPaymentMethods,
+  sendOrdersToBackend,
+} from "../../app/agent/agent";
+import "./PaymentSubscription.css";
 
 type PaymentMethod = {
   id: number;
@@ -55,7 +57,10 @@ export default function PaymentSubscription() {
     getMethods();
   }, []);
 
-  const handleOptionChange = (option: keyof SelectedOptions, paymentMethod: PaymentMethod | null) => {
+  const handleOptionChange = (
+    option: keyof SelectedOptions,
+    paymentMethod: PaymentMethod | null
+  ) => {
     setSelectedOptions((prevSelected) => ({
       ...prevSelected,
       [option]: prevSelected[option] === paymentMethod ? null : paymentMethod,
@@ -74,7 +79,7 @@ export default function PaymentSubscription() {
       methodsForSubscription: selectedOptionsArray,
     })
       .then((res) => {
-        window.location.href = "http://localhost:3000"
+        window.location.href = "https://localhost:3000";
       })
       .catch((err) => {});
   };
@@ -85,8 +90,12 @@ export default function PaymentSubscription() {
         <div className="card-title mx-auto">Choose payment method</div>
         <form>
           <div
-            className={`row row-1 ${selectedOptions.CREDIT_CARD !== null ? 'selected' : ''}`}
-            onClick={() => handleOptionChange('CREDIT_CARD', selectedOptions.CREDIT_CARD)}
+            className={`row row-1 ${
+              selectedOptions.CREDIT_CARD !== null ? "selected" : ""
+            }`}
+            onClick={() =>
+              handleOptionChange("CREDIT_CARD", selectedOptions.CREDIT_CARD)
+            }
           >
             <label htmlFor="creditCard" className="col-2">
               <FaCreditCard size={35} />
@@ -100,14 +109,18 @@ export default function PaymentSubscription() {
                 value="CREDIT_CARD"
                 onChange={() => {}}
                 checked={selectedOptions.CREDIT_CARD !== null}
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
               />
             </div>
           </div>
 
           <div
-            className={`row row-1 ${selectedOptions.QR_CODE !== null ? 'selected' : ''}`}
-            onClick={() => handleOptionChange('QR_CODE', selectedOptions.QR_CODE)}
+            className={`row row-1 ${
+              selectedOptions.QR_CODE !== null ? "selected" : ""
+            }`}
+            onClick={() =>
+              handleOptionChange("QR_CODE", selectedOptions.QR_CODE)
+            }
           >
             <label htmlFor="QR_CODE" className="col-2">
               <MdQrCodeScanner size={35} />
@@ -121,14 +134,18 @@ export default function PaymentSubscription() {
                 value="QR_CODE"
                 onChange={() => {}}
                 checked={selectedOptions.QR_CODE !== null}
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
               />
             </div>
           </div>
 
           <div
-            className={`row row-1 ${selectedOptions.PAY_PAL !== null ? 'selected' : ''}`}
-            onClick={() => handleOptionChange('PAY_PAL', selectedOptions.PAY_PAL)}
+            className={`row row-1 ${
+              selectedOptions.PAY_PAL !== null ? "selected" : ""
+            }`}
+            onClick={() =>
+              handleOptionChange("PAY_PAL", selectedOptions.PAY_PAL)
+            }
           >
             <label htmlFor="PAY_PAL" className="col-2">
               <FaPaypal size={35} />
@@ -142,14 +159,16 @@ export default function PaymentSubscription() {
                 value="PAY_PAL"
                 onChange={() => {}}
                 checked={selectedOptions.PAY_PAL !== null}
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
               />
             </div>
           </div>
 
           <div
-            className={`row row-1 ${selectedOptions.CRYPTO !== null ? 'selected' : ''}`}
-            onClick={() => handleOptionChange('CRYPTO', selectedOptions.CRYPTO)}
+            className={`row row-1 ${
+              selectedOptions.CRYPTO !== null ? "selected" : ""
+            }`}
+            onClick={() => handleOptionChange("CRYPTO", selectedOptions.CRYPTO)}
           >
             <label htmlFor="CRYPTO" className="col-2">
               <FaBitcoin size={35} />
@@ -163,7 +182,7 @@ export default function PaymentSubscription() {
                 value="CRYPTO"
                 onChange={() => {}}
                 checked={selectedOptions.CRYPTO !== null}
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
               />
             </div>
           </div>
@@ -172,10 +191,10 @@ export default function PaymentSubscription() {
             className="btn d-flex mx-auto"
             onClick={handleBuyNowClick}
             style={{
-              backgroundColor: '#ffffff',
-              border: '2px solid #a1aaa5',
-              color: '#333333',
-              fontSize: '1.1rem',
+              backgroundColor: "#ffffff",
+              border: "2px solid #a1aaa5",
+              color: "#333333",
+              fontSize: "1.1rem",
             }}
           >
             <b>Subscribe now</b>
