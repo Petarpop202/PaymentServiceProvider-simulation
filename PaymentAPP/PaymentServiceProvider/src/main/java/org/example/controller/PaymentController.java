@@ -55,7 +55,7 @@ public class PaymentController {
         Payment payment = paymentRepository.findById(paymentId.getPaymentId())
                 .orElseThrow(()-> new NotFoundException("Not found"));
         CardPaymentRequest cardPaymentRequestDto = cardPaymentService.createCardPaymentRequest(payment);
-        final String uri = "https://localhost:9010/api/aquirer/psp-payment-response";
+        final String uri = "https://localhost:9001/api/aquirer/psp-payment-response";
 
         ResponseEntity<CardPaymentResponse> responseEntity = restTemplate.postForEntity(
                 uri,
@@ -83,7 +83,7 @@ public class PaymentController {
     public String createPayPalOrder(@RequestBody PayPalRequest payPalRequest) {
         float paymentAmount = paymentService.getPaymentAmount(payPalRequest.getPaymentId());
         PayPalAmount payPalAmount = new PayPalAmount(paymentAmount);
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://localhost:9010/api/pay-pal/create-payment", payPalAmount, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("https://localhost:9005/api/pay-pal/create-payment", payPalAmount, String.class);
         return responseEntity.getBody();
     }
 
@@ -93,7 +93,7 @@ public class PaymentController {
         System.out.println(token);
         Map<String, String> queryParam = new HashMap<>();
         queryParam.put("token", token);
-        return restTemplate.postForEntity("https://localhost:9010/api/pay-pal/execute-payment?token=" + token, null, String.class);
+        return restTemplate.postForEntity("https://localhost:9005/api/pay-pal/execute-payment?token=" + token, null, String.class);
     }
 
     @PostMapping(value = "/crypto-payment")
@@ -101,11 +101,11 @@ public class PaymentController {
     public ResponseEntity<Invoice> createCryptoPayment(@RequestBody PayPalRequest payPalRequest) {
         float paymentAmount = paymentService.getPaymentAmount(payPalRequest.getPaymentId());
         CryptoPaymentData cryptoPaymentData = new CryptoPaymentData(paymentAmount, "USD", "USD", "Title from payment", "https://localhost:4000/success-payment", "http://localhost:9003/api/payment/callback");
-        return restTemplate.postForEntity("https://localhost:9010/coin-gate/create-payment", cryptoPaymentData, Invoice.class);
+        return restTemplate.postForEntity("https://localhost:9002/coin-gate/create-payment", cryptoPaymentData, Invoice.class);
     }
 
     @PostMapping(value = "/callback")
     public ResponseEntity<?> tryCallback(@RequestBody InvoiceCallbackData invoiceCallbackData) {
-        return restTemplate.postForEntity("https://localhost:9010/coin-gate/change-status", invoiceCallbackData, Object.class);
+        return restTemplate.postForEntity("https://localhost:9002/coin-gate/change-status", invoiceCallbackData, Object.class);
     }
 }

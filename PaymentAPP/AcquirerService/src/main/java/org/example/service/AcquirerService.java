@@ -104,7 +104,7 @@ public class AcquirerService {
         paymentRequest.setAcquirerTimestamp(acquirerTimestamp);
         paymentRequest.setPaymentPrice(payment.getAmount());
 
-        final String uri = "https://localhost:9010/api/pcc/different-bank";
+        final String uri = "https://localhost:9006/api/pcc/different-bank";
         ResponseEntity<SuccessfulPaymentData> responseEntity = restTemplate.postForEntity(
                 uri,
                 paymentRequest,

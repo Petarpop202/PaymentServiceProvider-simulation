@@ -22,7 +22,7 @@ function App() {
 
     // Retrieve the JWT token from your authentication system
     const jwtToken =
-      "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJQU1AiLCJzdWIiOiIxIiwiYXVkIjoid2ViIiwiaWF0IjoxNzAzNDQ1MDI1fQ.uTDA0_9Z0h9Ark_h_7bZb1SSunvqEZGdexjALwum8TBpAAgk08xr2H50GBg8YLAWxJxUeA8EYj2xZJcAEmmeVQ";
+      "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJQU1AiLCJzdWIiOiIxIiwiYXVkIjoid2ViIiwiaWF0IjoxNzA2NjQyNzk0fQ.FcIfJpHkCPUMdXJV57hB2KerNoxO3qXOm8ybkRa335_RHxd7JopX3A-zqI-NbHPLl4IkI2kGzyV7axuP0iIwMw";
 
     axios
       .post("https://localhost:9003/api/payment/payment-request", paymentData, {
@@ -31,10 +31,12 @@ function App() {
         },
       })
       .then((response) => {
-        console.log(response.data);
+        setRedirectUrl(response.data.paymentUrl);
+        setPaid(true);
       })
       .catch((error) => {
-        console.log(error);
+        setRedirectUrl("https://localhost:4000/payment-subscription");
+        setPaid(true);
       });
   }
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { CardPaymentModel } from "../model/CardPaymentModel";
 
-const ACQUIRER_URL = "https://localhost:9010/api/aquirer";
+const ACQUIRER_URL = "https://localhost:9001/api/aquirer";
 const PSP_URL = "https://localhost:9003/api/payment";
 const PSP_PAYMENT_URL = "https://localhost:9003/api/subscription";
 
@@ -15,7 +15,7 @@ const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use(
   (config) => {
     const jwtToken =
-      "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJQU1AiLCJzdWIiOiIxIiwiYXVkIjoid2ViIiwiaWF0IjoxNzAzNDQ1MDI1fQ.uTDA0_9Z0h9Ark_h_7bZb1SSunvqEZGdexjALwum8TBpAAgk08xr2H50GBg8YLAWxJxUeA8EYj2xZJcAEmmeVQ";
+      "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJQU1AiLCJzdWIiOiIxIiwiYXVkIjoid2ViIiwiaWF0IjoxNzA2NjQyNzk0fQ.FcIfJpHkCPUMdXJV57hB2KerNoxO3qXOm8ybkRa335_RHxd7JopX3A-zqI-NbHPLl4IkI2kGzyV7axuP0iIwMw";
 
     config.headers.Authorization = `Bearer ${jwtToken}`;
 

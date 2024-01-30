@@ -127,6 +127,8 @@ public class TokenUtils {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final long id = getIdFromToken(token);
         String stringId = String.valueOf(id);
+        if(userDetails == null)
+            return false;
         if (stringId.equals(userDetails.getUsername())) return true;
         return false;
     }

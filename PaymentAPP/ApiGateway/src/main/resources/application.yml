@@ -1,24 +1,32 @@
 server:
   port: 9010
   ssl:
-    key-store: classpath:gateway.p12
-    key-store-password: gatewaypassword
-    key-store-type: PKCS12
-    key-alias: gatewaycert
+    key-store: classpath:ks.p12
+    key-store-password: kspassword
+    keyStoreType: PKCS12
+    keyAlias: gatewaycert
     enabled: true
+    client-auth: none
 
 eureka:
+  instance:
+    hostname: localhost
+    secure-port-enabled: true
+    non-secure-port-enabled: false
   client:
-    service-url:
-      default-zone: http://localhost:8761/eureka
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
 
 spring:
   application:
     name: gateway-service
   cloud:
     gateway:
-      default-filters:
-        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      httpclient:
+        ssl:
+          useInsecureTrustManager: true
+#      default-filters:
+#        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
       globalcors:
         corsConfigurations:'[/**]':
           allowedOrigins: "*"
