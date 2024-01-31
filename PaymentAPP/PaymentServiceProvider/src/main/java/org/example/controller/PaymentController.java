@@ -10,6 +10,7 @@ import org.example.repository.IPaymentRepository;
 import org.example.service.CardPaymentService;
 import org.example.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,7 +34,8 @@ public class PaymentController {
 
     @Autowired
     private PaymentService paymentService;
-
+    @Value("${otherDeviceIp}")
+    private String otherDeviceIp;
     public PaymentController(CardPaymentService cardPaymentService, IPaymentRepository paymentRepository){this.cardPaymentService = cardPaymentService;this.paymentRepository = paymentRepository;}
 
 
@@ -90,7 +92,7 @@ public class PaymentController {
     public String createPayPalOrder(@RequestBody PayPalRequest payPalRequest) {
         float paymentAmount = paymentService.getPaymentAmount(payPalRequest.getPaymentId());
         PayPalAmount payPalAmount = new PayPalAmount(paymentAmount);
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity("https://localhost:9005/api/pay-pal/create-payment", payPalAmount, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("https://"+ otherDeviceIp +":9005/api/pay-pal/create-payment", payPalAmount, String.class);
         logger.info("User started new pay-pal payment.");
         return responseEntity.getBody();
     }
@@ -102,7 +104,7 @@ public class PaymentController {
         Map<String, String> queryParam = new HashMap<>();
         queryParam.put("token", token);
         logger.info("User finished pay-pal payment.");
-        return restTemplate.postForEntity("https://localhost:9005/api/pay-pal/execute-payment?token=" + token, null, String.class);
+        return restTemplate.postForEntity("https://" +otherDeviceIp + ":9005/api/pay-pal/execute-payment?token=" + token, null, String.class);
     }
 
     @PostMapping(value = "/crypto-payment")
@@ -111,12 +113,12 @@ public class PaymentController {
         float paymentAmount = paymentService.getPaymentAmount(payPalRequest.getPaymentId());
         CryptoPaymentData cryptoPaymentData = new CryptoPaymentData(paymentAmount, "USD", "USD", "Title from payment", "https://localhost:4000/success-payment", "http://localhost:9003/api/payment/callback");
         logger.info("User started new crypto payment.");
-        return restTemplate.postForEntity("https://localhost:9002/coin-gate/create-payment", cryptoPaymentData, Invoice.class);
+        return restTemplate.postForEntity("https://" + otherDeviceIp + ":9002/coin-gate/create-payment", cryptoPaymentData, Invoice.class);
     }
 
     @PostMapping(value = "/callback")
     public ResponseEntity<?> tryCallback(@RequestBody InvoiceCallbackData invoiceCallbackData) {
         logger.error("Crypto payment rollback.");
-        return restTemplate.postForEntity("https://localhost:9002/coin-gate/change-status", invoiceCallbackData, Object.class);
+        return restTemplate.postForEntity("https://" + otherDeviceIp +":9002/coin-gate/change-status", invoiceCallbackData, Object.class);
     }
 }
