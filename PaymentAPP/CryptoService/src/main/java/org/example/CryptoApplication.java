@@ -33,7 +33,7 @@ public class CryptoApplication {
     @Bean
     public RestTemplate restTemplate() throws KeyStoreException, NoSuchAlgorithmException, IOException, CertificateException, UnrecoverableKeyException, KeyManagementException {
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keyStore.load(new FileInputStream(new File("C:\\Users\\Korisnik\\Desktop\\SEP Projekat\\sep-2023-team-23\\PaymentAPP\\PaymentServiceProvider\\src\\main\\resources\\ks.p12")),
+        keyStore.load(new FileInputStream(keyStoreFile.getFile()),
                 keyStorePassword.toCharArray());
 
         SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(

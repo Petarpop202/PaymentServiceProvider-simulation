@@ -15,7 +15,7 @@ const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use(
   (config) => {
     const jwtToken =
-      "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJQU1AiLCJzdWIiOiIxIiwiYXVkIjoid2ViIiwiaWF0IjoxNzA2Njg4MDY0fQ.1fDdhca3zZ6LwY0HnuyPZfIXiZ5hMxjQX4EwK9KENIPMiKp5NVpecm5ZYzfLh7Vl1EdGG3yIeP4RBdjS2YGv6A";
+      "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJQU1AiLCJzdWIiOiIxIiwiYXVkIjoid2ViIiwiaWF0IjoxNzA2Njk3MjYyfQ.r8yxfGzDt7D-aaTizFBcOACQoBDjlIMjAsPpm4FGwtcx4RXKOTOP4-pxgA_kg_dTr2bQkSA9oF6aWoS-PwisuA";
 
     config.headers.Authorization = `Bearer ${jwtToken}`;
 
