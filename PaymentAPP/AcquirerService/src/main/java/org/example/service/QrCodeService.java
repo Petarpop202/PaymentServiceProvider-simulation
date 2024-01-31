@@ -62,7 +62,7 @@ public class QrCodeService {
                 QR_CODE_GEN_URL,
                 requestEntity,
                 byte[].class);
-
+        logger.info("User requested ips code payment !");
         return responseEntity.getBody();
     }
 

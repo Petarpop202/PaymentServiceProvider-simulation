@@ -14,19 +14,22 @@
     <Loggers>
         <Logger name="org.example.controller.PaymentController" level="info" additivity="false">
             <AppenderRef ref="MyFile"/>
+            <AppenderRef ref="Console"/>
         </Logger>
         <Logger name="org.example.service.CardPaymentService" level="info" additivity="false">
             <AppenderRef ref="MyFile"/>
+            <AppenderRef ref="Console"/>
         </Logger>
         <Logger name="org.example.service.SubscriptionService" level="info" additivity="false">
             <AppenderRef ref="MyFile"/>
+            <AppenderRef ref="Console"/>
         </Logger>
         <Logger name="org.example.service.EmailService" level="info" additivity="false">
             <AppenderRef ref="MyFile"/>
+            <AppenderRef ref="Console"/>
         </Logger>
         <Root level="info">
             <AppenderRef ref="Console" level="info" />
-            <AppenderRef ref="MyFile"/>
         </Root>
     </Loggers>
 </Configuration>
