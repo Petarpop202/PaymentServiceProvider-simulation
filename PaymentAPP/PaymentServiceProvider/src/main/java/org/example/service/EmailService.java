@@ -2,6 +2,10 @@ package org.example.service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.example.controller.PaymentController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -22,6 +26,7 @@ public class EmailService {
 
     private final String emailTo = "spring.mail.username";
     private final String emailFrom = "psp@gmail.com";
+    private static final Logger logger = LogManager.getLogger(EmailService.class);
 
     @Async
     public void sendTokenMail(String token) throws MessagingException {
@@ -32,5 +37,6 @@ public class EmailService {
         helper.setSubject("Subscription token");
         helper.setText("Token for your subscription: " + token, false);
         javaMailSender.send(mimeMessage);
+        logger.info("Subscription mail sent to user !");
     }
 }

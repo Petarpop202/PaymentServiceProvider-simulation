@@ -2,6 +2,9 @@ package org.example.service;
 
 import javax.mail.MessagingException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.example.controller.PaymentController;
 import org.example.dto.CardPaymentResponse;
 import org.example.dto.SubscriptionDTO;
 import org.example.exception.BadRequestException;
@@ -41,6 +44,7 @@ public class SubscriptionService {
 
     @Autowired
     private RestTemplate restTemplate;
+    private static final Logger logger = LogManager.getLogger(SubscriptionService.class);
 
     public Subscription createSubscription(SubscriptionDTO subscriptionDTO) throws Exception {
         List<PaymentMethod> paymentMethods = findPaymentMethods(subscriptionDTO.getMethodsForSubscription());
@@ -59,6 +63,7 @@ public class SubscriptionService {
         subscription = subscriptionRepository.save(subscription);
         String token = tokenUtils.generateToken(subscription.getId());
         emailService.sendTokenMail(token);
+        logger.info("User subscribed to psp .");
         return subscription;
     }
 

@@ -23,12 +23,14 @@ import java.security.cert.CertificateException;
 @SpringBootApplication()
 public class AcquirerServiceApplication {
     public static void main(String[] args) { SpringApplication.run(AcquirerServiceApplication.class, args);}
+    @Value("${http.client.ssl.trust-store}")
+    private Resource keyStoreFile;
     @Value("${http.client.ssl.trust-store-password}")
     private String keyStorePassword;
     @Bean
     public RestTemplate restTemplate() throws KeyStoreException, NoSuchAlgorithmException, IOException, CertificateException, UnrecoverableKeyException, KeyManagementException {
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keyStore.load(new FileInputStream(new File("C:\\Users\\Korisnik\\Desktop\\SEP Projekat\\sep-2023-team-23\\PaymentAPP\\PaymentServiceProvider\\src\\main\\resources\\ks.p12")),
+        keyStore.load(new FileInputStream(keyStoreFile.getFile()),
                 keyStorePassword.toCharArray());
 
         SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(

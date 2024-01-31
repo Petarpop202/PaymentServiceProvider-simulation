@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{dd.MM.yyyy. HH:mm:ss} %-5p [%-20c{1}] %m%n" />
+        </Console>
+        <RollingFile name="MyFile" fileName="./logs.log" append="true" filePattern="./logs.log.%i">
+            <PatternLayout pattern="%d{dd.MM.yyyy. HH:mm:ss} %-5p [%-20c{1}] %m%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="30 MB"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.example.controller.PaymentController" level="info" additivity="false">
+            <AppenderRef ref="MyFile"/>
+        </Logger>
+        <Logger name="org.example.service.CardPaymentService" level="info" additivity="false">
+            <AppenderRef ref="MyFile"/>
+        </Logger>
+        <Logger name="org.example.service.SubscriptionService" level="info" additivity="false">
+            <AppenderRef ref="MyFile"/>
+        </Logger>
+        <Logger name="org.example.service.EmailService" level="info" additivity="false">
+            <AppenderRef ref="MyFile"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="Console" level="info" />
+            <AppenderRef ref="MyFile"/>
+        </Root>
+    </Loggers>
+</Configuration>

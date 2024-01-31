@@ -1,5 +1,7 @@
 package org.example.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.dto.*;
 import org.example.exception.NotFoundException;
 import org.example.model.Payment;
@@ -27,6 +29,7 @@ public class PaymentController {
 
     private final IPaymentRepository paymentRepository;
     private final CardPaymentService cardPaymentService;
+    private static final Logger logger = LogManager.getLogger(PaymentController.class);
 
     @Autowired
     private PaymentService paymentService;
@@ -42,6 +45,7 @@ public class PaymentController {
     @PreAuthorize("hasAnyAuthority('CREDIT CARD', 'QR CODE', 'PAY PAL', 'CRYPTO')")
     public ResponseEntity<?> paymentRequest(@RequestBody PaymentRequestFromClient paymentRequestDto) throws Exception {
         CardPaymentResponse responseDto = cardPaymentService.createPayment(paymentRequestDto);
+        logger.info("User started new payment.");
         return ResponseEntity.ok(responseDto);
     }
 
@@ -63,8 +67,11 @@ public class PaymentController {
                 CardPaymentResponse.class );
         CardPaymentResponse responseDto = responseEntity.getBody();
 
-        if(responseDto == null)
+        if(responseDto == null){
+            logger.warn("User requested card payment with invalid bank account!.");
             throw new NotFoundException("Bank account not found!");
+        }
+        logger.info("User requested card payment !.");
         return ResponseEntity.ok(responseDto);
     }
 
@@ -84,6 +91,7 @@ public class PaymentController {
         float paymentAmount = paymentService.getPaymentAmount(payPalRequest.getPaymentId());
         PayPalAmount payPalAmount = new PayPalAmount(paymentAmount);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity("https://localhost:9005/api/pay-pal/create-payment", payPalAmount, String.class);
+        logger.info("User started new pay-pal payment.");
         return responseEntity.getBody();
     }
 
@@ -93,6 +101,7 @@ public class PaymentController {
         System.out.println(token);
         Map<String, String> queryParam = new HashMap<>();
         queryParam.put("token", token);
+        logger.info("User finished pay-pal payment.");
         return restTemplate.postForEntity("https://localhost:9005/api/pay-pal/execute-payment?token=" + token, null, String.class);
     }
 
@@ -101,11 +110,13 @@ public class PaymentController {
     public ResponseEntity<Invoice> createCryptoPayment(@RequestBody PayPalRequest payPalRequest) {
         float paymentAmount = paymentService.getPaymentAmount(payPalRequest.getPaymentId());
         CryptoPaymentData cryptoPaymentData = new CryptoPaymentData(paymentAmount, "USD", "USD", "Title from payment", "https://localhost:4000/success-payment", "http://localhost:9003/api/payment/callback");
+        logger.info("User started new crypto payment.");
         return restTemplate.postForEntity("https://localhost:9002/coin-gate/create-payment", cryptoPaymentData, Invoice.class);
     }
 
     @PostMapping(value = "/callback")
     public ResponseEntity<?> tryCallback(@RequestBody InvoiceCallbackData invoiceCallbackData) {
+        logger.error("Crypto payment rollback.");
         return restTemplate.postForEntity("https://localhost:9002/coin-gate/change-status", invoiceCallbackData, Object.class);
     }
 }
