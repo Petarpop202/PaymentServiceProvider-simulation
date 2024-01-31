@@ -41,8 +41,7 @@ public class QrCodeService {
 
     private final IAgencyRepository agencyRepository;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     private static final String QR_CODE_GEN_URL = "https://nbs.rs/QRcode/api/qr/v1/gen/500";
 
