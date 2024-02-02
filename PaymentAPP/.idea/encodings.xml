@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/AcquirerService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/AcquirerService/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ApiGateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/CreditCardPayment/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/CryptoService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/CryptoService/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/DiscoveryService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/EurekaGateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/EurekaService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/IPSService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/IssuerService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/IssuerService/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/PCC/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/PCC/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/PayPal/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/PayPal/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/PaymentServiceProvider/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/PaymentServiceProvider/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

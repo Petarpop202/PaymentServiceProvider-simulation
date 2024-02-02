@@ -1,0 +1,4 @@
+insert into bank_accounts(account_number, balance) values ('xxxxxxxxxxxxxxxxxxxxxxxx', 1450), ('yyyyyyyyyyyyyyyyyyyyyyy', 456);
+
+insert into credit_cards(pan, card_holder_name, security_code, expiration_date, bank_account_id) values ('$2a$12$kcYt.ejcO6goHsdKZWIZUu/pksqqvShpjmtVwQbjrHxk5..20za6O', 'Ivica Onyemauchechi', '$2a$12$o6cg6tZGUKG/Yup483xwh.JamYBGK9598zr0Kb7jqDqX76IAJQ8LG', '2029-02-01 00:00:00', 1), /*"5293287817083965" "Ivica Onyemauchechi" "598" "2029-02-01 00:00:00" */
+                                                                                        ('$2a$12$4L1IupatanVVs7hdd7Xg9ewfHvNgEQa/6lGNEAYooHTJHXBehKmFi', 'Akbolat Borkowska', '$2a$12$revzEjO6jbRJQE2ipSF5WuBkjInDmJqnUDsMdjd9.oRmbE4B4dSvm', '2029-08-01 00:00:00', 2); /*"5413991713698975" "Akbolat Borkowska" "741" "2028-07-01 00:00:00"*/
