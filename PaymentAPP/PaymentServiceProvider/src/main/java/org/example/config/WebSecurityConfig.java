@@ -44,10 +44,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
                 .authorizeRequests().antMatchers("/api/subscription/create-subscription").permitAll()
                 .antMatchers("/api/subscription/get-all-methods").permitAll()
+                .antMatchers("/api/payment/payment-request").permitAll()
                 .anyRequest().authenticated().and()
                 .cors().and()
                 .addFilterBefore(new TokenAuthenticationFilter(tokenUtils, customUserDetailsService), BasicAuthenticationFilter.class);
         http.csrf().disable();
+        http.headers().xssProtection().and().contentSecurityPolicy("script-src 'self'");
     }
 
     @Override

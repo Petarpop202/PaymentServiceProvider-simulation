@@ -1,6 +1,9 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.example.controller.PaymentController;
 import org.example.dto.CardPaymentRequest;
 import org.example.dto.CardPaymentResponse;
 import org.example.dto.PaymentRequestFromClient;
@@ -23,8 +26,9 @@ public class CardPaymentService {
     private final IAgencyRepository agencyRepository;
 
     private final IPaymentRepository paymentRepository;
+    private static final Logger logger = LogManager.getLogger(CardPaymentService.class);
 
-    private static final String PAYMENT_CHOOSE_URL = "http://localhost:4000/choose-payment/";
+    private static final String PAYMENT_CHOOSE_URL = "https://localhost:4000/choose-payment/";
 
     public CardPaymentRequest createCardPaymentRequest(Payment payment) throws Exception {
         Agency agency = agencyRepository.findById(payment.getMerchantOrderId())
@@ -36,9 +40,9 @@ public class CardPaymentService {
                 payment.getMerchantOrderId(),
                 payment.getAmount(),
                 payment.getTimestamp(),
-                new URL("http://localhost:4000/success-payment"),
-                new URL("http://localhost:4000/failed-payment"),
-                new URL("http://localhost:4000/error-payment"),
+                new URL("https://localhost:4000/success-payment"),
+                new URL("https://localhost:4000/failed-payment"),
+                new URL("https://localhost:4000/error-payment"),
                 payment.getId()
         );
     }
@@ -60,5 +64,6 @@ public class CardPaymentService {
 
         payment.setStatus(transactionDetails.getPaymentStatus());
         paymentRepository.save(payment);
+        logger.info("User finished card payment !");
     }
 }

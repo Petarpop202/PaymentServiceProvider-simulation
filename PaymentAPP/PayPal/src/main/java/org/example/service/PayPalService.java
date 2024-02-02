@@ -28,8 +28,8 @@ public class PayPalService {
         PurchaseUnitRequest purchaseUnitRequest = new PurchaseUnitRequest().amountWithBreakdown(amountBreakdown);
         orderRequest.purchaseUnits(List.of(purchaseUnitRequest));
         ApplicationContext applicationContext = new ApplicationContext()
-                .returnUrl("http://localhost:4000/success-payment")
-                .cancelUrl("http://localhost:4000/error-payment");
+                .returnUrl("https://localhost:4000/success-payment")
+                .cancelUrl("https://localhost:4000/error-payment");
         orderRequest.applicationContext(applicationContext);
         OrdersCreateRequest ordersCreateRequest = new OrdersCreateRequest().requestBody(orderRequest);
 
@@ -53,7 +53,7 @@ public class PayPalService {
         OrdersCaptureRequest ordersCaptureRequest = new OrdersCaptureRequest(token);
         HttpResponse<Order> httpResponse = payPalHttpClient.execute(ordersCaptureRequest);
         if (httpResponse.result().status() != null) {
-            return "http://localhost:4000/success-payment";
+            return "https://localhost:4000/success-payment";
         }
         throw new PayPalExecutionException(("Error completing payment"));
     }

@@ -40,7 +40,7 @@ public class AcquirerService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private static final String CARD_DETAILS_URL = "http://localhost:4000/payment/credit-card/";
+    private static final String CARD_DETAILS_URL = "https://localhost:4000/payment/credit-card/";
 
     private final IAgencyRepository agencyRepository;
 
@@ -104,7 +104,7 @@ public class AcquirerService {
         paymentRequest.setAcquirerTimestamp(acquirerTimestamp);
         paymentRequest.setPaymentPrice(payment.getAmount());
 
-        final String uri = "http://localhost:9010/api/pcc/different-bank";
+        final String uri = "https://localhost:9006/api/pcc/different-bank";
         ResponseEntity<SuccessfulPaymentData> responseEntity = restTemplate.postForEntity(
                 uri,
                 paymentRequest,
